@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Create a reusable Axios instance
 const axiosClient = axios.create({
   baseURL: "http://127.0.0.1:8000/api",  // Laravel API endpoint
   withCredentials: true,                 // allows cookies if using Sanctum
