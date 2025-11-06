@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +13,9 @@ export default function LoginPage() {
     e.preventDefault();
     const res = await login(email, password);
     if (res.success) navigate("/dashboard");
-    else setMessage(res.message);
+    else {
+      setMessage(res.message);
+    }
   };
 
   return (
@@ -30,10 +32,13 @@ export default function LoginPage() {
               <div className="flex flex-col px-20 w-full">
                 <input className="text-base border w-full mb-3 p-4 rounded" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 <input className="text-base border w-full mb-3 p-4 rounded" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold text-lg py-4 rounded" type="submit" >
+                <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold text-lg py-4 rounded" type="submit">
                   Login
                 </button>
                 {message && <p className="mt-3 text-center text-sm text-red-500">{message}</p>}
+                <Link to={"/forgot-password"}>
+                  <p className="text-blue-500 underline">Forgot Password?</p>
+                </Link>
               </div>
             </form>
       </div>

@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +18,7 @@ export const AuthProvider = ({ children }) => {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           delete api.defaults.headers.common["Authorization"];
-          window.location.href = "/login";
+          // navigate("/401");
         }
         return Promise.reject(error);
       }
@@ -25,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       api.interceptors.response.eject(resInterceptor);
     };
-  }, []);
+  }, [navigate]); // ✅ include navigate in deps
 
   useEffect(() => {
     async function restore() {
@@ -36,7 +38,6 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      // set header for this attempt (optional)
       api.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
 
       try {
@@ -67,8 +68,9 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       return { success: true };
     } catch (err) {
-      console.error("Login failed:", err);
-      return { success: false, error: "Invalid credentials" };
+      const error = err.response?.data?.message;
+      console.error("Login failed:", error);
+      return { success: false, message: error };
     }
   };
 
