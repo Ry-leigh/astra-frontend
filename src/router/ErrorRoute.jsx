@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
-import UnauthorizedPage from "../errorpages/UnauthorizedPage";
-import ForbiddenPage from "../errorpages/ForbiddenPage";
-import ServerErrorPage from "../errorpages/ServerErrorPage";
-import NotFoundPage from "../errorpages/NotFoundPage";
+import UnauthorizedPage from "../pages/errorpages/UnauthorizedPage";
+import ForbiddenPage from "../pages/errorpages/ForbiddenPage";
+import ServerErrorPage from "../pages/errorpages/ServerErrorPage";
+import NotFoundPage from "../pages/errorpages/NotFoundPage";
 
 export default function ErrorRoute({ code }) {
   switch (code) {

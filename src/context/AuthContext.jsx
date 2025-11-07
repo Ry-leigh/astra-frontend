@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const isLoggingOut = useRef(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +19,6 @@ export const AuthProvider = ({ children }) => {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           delete api.defaults.headers.common["Authorization"];
-          // navigate("/401");
         }
         return Promise.reject(error);
       }
@@ -27,10 +27,11 @@ export const AuthProvider = ({ children }) => {
     return () => {
       api.interceptors.response.eject(resInterceptor);
     };
-  }, [navigate]); // ✅ include navigate in deps
+  }, []);
 
   useEffect(() => {
     async function restore() {
+      setLoading(true);
       const savedToken = localStorage.getItem("token");
 
       if (!savedToken) {
@@ -42,14 +43,15 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const res = await api.get("/user");
-        setUser(res.data);
-        localStorage.setItem("user", JSON.stringify(res.data));
+        setUser(res.data.user);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
       } catch (err) {
         console.warn("Token validation failed — clearing auth", err);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         delete api.defaults.headers.common["Authorization"];
-        setUser(null);
+        setUser(null)
+        navigate("/");
       } finally {
         setLoading(false);
       }
@@ -58,36 +60,64 @@ export const AuthProvider = ({ children }) => {
     restore();
   }, []);
 
-  const login = async (email, password) => {
-    try {
-      const res = await api.post("/login", { email, password });
-      const { token, user: userData } = res.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(userData));
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      setUser(userData);
-      return { success: true };
-    } catch (err) {
-      const error = err.response?.data?.message;
-      console.error("Login failed:", error);
-      return { success: false, message: error };
-    }
+const login = async (email, password) => {
+  setLoading(true);
+  try {
+    const res = await api.post("/login", { email, password });
+    const { token, user: userData } = res.data;
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(userData));
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    setUser(res.data.user);
+    return { success: true };
+  } catch (err) {
+    // full error logging
+    console.error("Login failed raw error:", err);
+
+    let message = "An unexpected error occurred.";
+    if (err.response) {
+      // backend returned something
+      message = err.response.data?.message || err.response.statusText;
+    } else if (err.request) {
+      // request made, no response
+      message = "No response from server. Check connection or backend URL.";
+    } else {
+      // axios setup issue
+      message = err.message;
+    } 
+    return { success: false, message };
+  } finally {
+      setLoading(false);
   };
+};
 
   const logout = async () => {
+    // set flag first to avoid race in PrivateRoute
+    isLoggingOut.current = true;
+
     try {
       await api.post("/logout");
     } catch (err) {
-      console.warn("Logout request failed", err);
-    }
-    setUser(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    delete api.defaults.headers.common["Authorization"];
-  };
+      // ignore, still clear client-side
+    } finally {
+      // clear auth
+      setUser(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      delete api.defaults.headers.common["Authorization"];
 
+      // navigate after clearing
+      navigate("/", { replace: true });
+
+      // give some time for the router to settle, then release flag
+      setTimeout(() => {
+        isLoggingOut.current = false;
+      }, 300);
+    }
+  };
+  
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, isLoggingOutRef: isLoggingOut }}>
       {children}
     </AuthContext.Provider>
   );
