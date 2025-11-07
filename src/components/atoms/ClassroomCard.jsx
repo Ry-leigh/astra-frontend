@@ -1,10 +1,10 @@
 import { EllipsisVertical } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function ClassroomCard({ classroomId, programName, yearLevel, section }) {
+export default function ClassroomCard({ classroomId, programName, yearLevel, section, color }) {
     return (
         <Link className="flex flex-col h-auto w-1/3 drop-shadow-xs" to={`/courses/${classroomId}`}>
-            <div className="flex bg-red-400 h-36 p-4 rounded-t-xl">
+            <div className="flex h-36 p-4 rounded-t-xl" style={{ backgroundColor: `#${color}` }}>
                 <EllipsisVertical color="white" size={32} />
                 <div className="w-full" />
                 <h1 className="font-bold text-8xl text-zinc-50">{yearLevel}{section}</h1>

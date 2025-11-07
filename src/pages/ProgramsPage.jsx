@@ -53,7 +53,7 @@ export default function ProgramsPage() {
                         .replace(/^Bachelor of Science in /i, "BS ");
 
                     return (
-                        <ProgramCard key={program.id} programId={program.id} programName={shortName} programDesc={program.description || "—"} />                    
+                        <ProgramCard key={program.id} programId={program.id} programName={shortName} programDesc={program.description || "—"} color={program.color} />                    
                     );
                     })}
                 </div>

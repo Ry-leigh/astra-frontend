@@ -20,8 +20,8 @@ export default function CoursePage() {
       console.log(response.data);
 
       if (response.data.success) {
-        setCourses(response.data.data);
-        setClassroom(response.data.classroom);
+        setCourses(response.data.courses);
+        setClassroom(response.data.classroom.name);
       } else {
         throw new Error("Failed to load courses");
       }
@@ -59,7 +59,7 @@ export default function CoursePage() {
               const courseName = course?.name || "Untitled Course";
               const courseCode = course?.code || "—";
               const instructorName = instructor
-                ? `${instructor.first_name} ${instructor.last_name}`
+                ? `${instructor.sex == 'M' ? 'Mr. ' : 'Ms. '} ${instructor.first_name} ${instructor.last_name}`
                 : "No Instructor";
 
               return (
@@ -69,6 +69,7 @@ export default function CoursePage() {
                   courseName={courseName}
                   courseInstructor={instructorName}
                   semester={item.semester}
+                  color={item?.color || 'E4E4E4'}
                 />
               );
             })}

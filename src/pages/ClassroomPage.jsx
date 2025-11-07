@@ -46,18 +46,18 @@ export default function ClassroomPage() {
     return(
         <Layout>
             <div className="">
-            <h1 className="text-2xl font-bold mb-4">{program}</h1>
+            <h1 className="text-2xl font-bold mb-4">{program.name}</h1>
             {classrooms.length === 0 ? (
                 <p>No classrooms found.</p>
             ) : (
                 <div className="flex flex-wrap overflow-x-auto gap-4">
                     {classrooms.map((classroom) => {
-                        const shortName = program
+                        const shortName = program.name
                             .replace(/^Bachelor of Arts in /i, "BA ")
                             .replace(/^Bachelor of Science in /i, "BS ");
 
                         return (
-                            <ClassroomCard key={classroom.id} classroomId={classroom.id} programName={shortName} yearLevel={classroom.year_level} section={classroom.section || ""}  />                    
+                            <ClassroomCard key={classroom.id} classroomId={classroom.id} programName={shortName} yearLevel={classroom.year_level} section={classroom.section || ""} color={program.color} />                    
                         );
                     })}
                 </div>
