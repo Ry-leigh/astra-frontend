@@ -1,11 +1,11 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",  // Laravel API endpoint
-  withCredentials: true,                 // allows cookies if using Sanctum
+  baseURL: "http://127.0.0.1:8000/api",  
+  withCredentials: true,                 
   headers: {
-    "Accept": "application/json",        // tells Laravel we expect JSON
-    "Content-Type": "application/json",  // sends JSON in request body
+    "Accept": "application/json",       
+    "Content-Type": "application/json", 
   },
 });
 

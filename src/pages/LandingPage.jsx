@@ -12,7 +12,6 @@ export default function LandingPage() {
       </div>
       <div className="flex flex-col w-full h-full p-4">
         <div className="bg-blue-300 rounded-2xl h-full py-2 px-4  ">
-          hello
         </div>
       </div>
     </div>
