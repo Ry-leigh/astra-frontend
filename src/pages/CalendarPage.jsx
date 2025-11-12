@@ -1,7 +1,8 @@
 import Layout from "@/components/layout/Layout";
-import { NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect ,useState } from "react";
+import PageHeader from "@/components/elements/PageHeader";
+import { Navigation } from "@/components/elements/Calendar";
 import Calendar from "@/components/elements/Calendar";
 
 export default function CalendarPage() {
@@ -15,13 +16,12 @@ export default function CalendarPage() {
     return (
         <Layout>
             <div className="flex flex-col w-full gap-6">
-                <div className="flex w-full bg-white p-3 content-center rounded-lg text-nowrap">
-                    <p className="text-lg font-medium">Calendar</p>
-                    <div className="w-full" />
-                </div>
-                <div className="flex flex-col w-full bg-white pt-3 px-3 content-center rounded-lg text-nowrap">
-                    
-                    <Calendar />
+                <PageHeader>Calendar</PageHeader>
+                <div className="flex flex-col w-full bg-white px-3 content-center rounded-lg text-nowrap">
+                    <div className="flex flex-col pb-4 px-2">
+                        <Navigation />
+                        <Calendar />
+                    </div>
                 </div>
             </div>
         </Layout>

@@ -9,6 +9,8 @@ import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -21,6 +23,7 @@ export default function Sidebar() {
         { name: "Announcements", path: "/announcements", icon: <CampaignOutlinedIcon fontSize="small" /> },
         { name: "Calendar", path: "/calendar", icon: <CalendarTodayOutlinedIcon fontSize="small" /> },
         { name: "Programs", path: "/programs", icon: <BusinessOutlinedIcon fontSize="small" /> },
+        { name: "Classes", path: "/class/6", icon: <LibraryBooksOutlinedIcon fontSize="small" /> },
         { name: "Users", path: "/users", icon: <GroupsOutlinedIcon fontSize="small" /> }],
       bottom: [
         { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
@@ -30,7 +33,7 @@ export default function Sidebar() {
     Instructor:
     { top: [
         { name: "Dashboard", path: "/dashboard", icon: <HomeIcon fontSize="small" /> },
-        { name: "Calendar", path: "/calendar", icon: <HomeIcon fontSize="small" /> },
+        { name: "Calendar", path: "/calendar", icon: <CalendarTodayOutlinedIcon fontSize="small" /> },
         { name: "Announcements", path: "/announcements", icon: <HomeIcon fontSize="small" /> },
         { name: "Classes", path: "/classes", icon: <HomeIcon fontSize="small" /> }],
       bottom: [
@@ -40,13 +43,13 @@ export default function Sidebar() {
     },
     Officer:
     { top: [
-        { name: "Dashboard", path: "/dashboard", icon: <HomeIcon fontSize="small" /> },
-        { name: "Calendar", path: "/calendar", icon: <HomeIcon fontSize="small" /> },
-        { name: "Announcements", path: "/announcements", icon: <HomeIcon fontSize="small" /> },
-        { name: "Courses", path: "/classes", icon: <HomeIcon fontSize="small" /> }],
+        { name: "Dashboard", path: "/dashboard", icon: <SpaceDashboardOutlinedIcon fontSize="small" /> },
+        { name: "Calendar", path: "/calendar", icon: <CalendarTodayOutlinedIcon fontSize="small" /> },
+        { name: "Announcements", path: "/announcements", icon: <CampaignOutlinedIcon fontSize="small" /> },
+        { name: "Courses", path: "/classes", icon: <SchoolOutlinedIcon fontSize="small" /> }],
       bottom: [
-        { name: "Help", path: "/help", icon: <HomeIcon fontSize="small" /> },
-        { name: "Settings", path: "/settings", icon: <HomeIcon fontSize="small" /> }
+        { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
+        { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
       ]
     },
     Student:

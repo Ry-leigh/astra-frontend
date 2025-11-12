@@ -1,11 +1,12 @@
 import api from "../api/axios"
 import { useEffect, useState } from "react";
-import Layout from "@/components/layout/Layout";
-import ErrorRoute from "@/router/ErrorRoute";
 import { useParams } from "react-router-dom";
-import ClassAnnouncementPreloader from "@/components/preloaders/ClassAnnouncementPreloader";
-import ClassNavigation from "@/components/elements/ClassNavigation";
 import { useAuth } from "@/context/AuthContext";
+
+import ClassAnnouncementPreloader from "@/components/preloaders/ClassAnnouncementPreloader";
+import ErrorRoute from "@/router/ErrorRoute";
+import Layout from "@/components/layout/Layout";
+import ClassNavigation from "@/components/elements/ClassNavigation";
 
 export default function ClassAnnouncementPage() {
     const { id } = useParams();

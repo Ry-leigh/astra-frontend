@@ -1,11 +1,15 @@
 import api from "../api/axios"
 import { useEffect, useState } from "react";
-import Layout from "@/components/layout/Layout";
-import ErrorRoute from "@/router/ErrorRoute";
 import { useParams } from "react-router-dom";
-import ClassTaskPreloader from "@/components/preloaders/ClassTaskPreloader";
-import ClassNavigation from "@/components/elements/ClassNavigation";
 import { useAuth } from "@/context/AuthContext";
+
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
+
+import ClassTaskPreloader from "@/components/preloaders/ClassTaskPreloader";
+import ErrorRoute from "@/router/ErrorRoute";
+import Layout from "@/components/layout/Layout";
+import ClassNavigation from "@/components/elements/ClassNavigation";
 
 export default function ClassTaskPage() {
     const { id } = useParams();
@@ -126,10 +130,10 @@ export default function ClassTaskPage() {
                                 {(role === 'Administrator' || role === 'Instructor') && (
                                     <td className="px-4 py-3 text-center space-x-3">
                                         <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-gray-800 hover:bg-gray-200 transition" onClick={() => console.log("Edit", enrollee.student.user.id)}>
-                                            <PencilLine size={18} />
+                                            <EditOutlinedIcon fontSize="small"/>
                                         </button>
                                         <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-red-600 hover:bg-red-100 transition" onClick={() => console.log("Delete", enrollee.student.user.id)}>
-                                            <SquareMinus size={18} />
+                                            <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
                                         </button>
                                     </td>
                                 )}
@@ -147,10 +151,10 @@ export default function ClassTaskPage() {
                                 {(role === 'Administrator' || role === 'Instructor') && (
                                     <td className="px-4 py-3 text-center space-x-3">
                                         <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-gray-800 hover:bg-gray-200 transition" onClick={() => console.log("Edit", enrollee.student.user.id)}>
-                                            <PencilLine size={18} />
+                                            <EditOutlinedIcon fontSize="small"/>
                                         </button>
                                         <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-red-600 hover:bg-red-100 transition" onClick={() => console.log("Delete", enrollee.student.user.id)}>
-                                            <SquareMinus size={18} />
+                                            <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
                                         </button>
                                     </td>
                                 )}
@@ -168,10 +172,10 @@ export default function ClassTaskPage() {
                                 {(role === 'Administrator' || role === 'Instructor') && (
                                     <td className="px-4 py-3 text-center space-x-3">
                                         <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-gray-800 hover:bg-gray-200 transition" onClick={() => console.log("Edit", enrollee.student.user.id)}>
-                                            <PencilLine size={18} />
+                                            <EditOutlinedIcon fontSize="small"/>
                                         </button>
                                         <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-red-600 hover:bg-red-100 transition" onClick={() => console.log("Delete", enrollee.student.user.id)}>
-                                            <SquareMinus size={18} />
+                                            <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
                                         </button>
                                     </td>
                                 )}

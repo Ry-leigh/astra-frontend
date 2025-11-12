@@ -1,8 +1,10 @@
 import api from "../api/axios"
 import { useEffect, useState } from "react";
-import Layout from "@/components/layout/Layout";
-import ErrorRoute from "@/router/ErrorRoute";
+
 import UserPreloader from "@/components/preloaders/UserPreloader";
+import ErrorRoute from "@/router/ErrorRoute";
+import Layout from "@/components/layout/Layout";
+import PageHeader from "@/components/elements/PageHeader";
 
 export default function UsersPage() {
     const [users, setUsers] = useState();
@@ -41,13 +43,7 @@ export default function UsersPage() {
     return(
         <Layout>
             <div className="flex flex-col w-full gap-4">
-                <div className="flex w-full">
-                    <h1 className="text-2xl font-bold mb-4">Users</h1>
-                    <div className="flex w-full" />
-                    <button className="flex w-fit bg-blue-950 rounded-lg items-center p-3 gap-2">
-                        <h3 className="text-white font-medium text-nowrap">Create User</h3>
-                    </button>
-                </div>
+                <PageHeader>Users</PageHeader>
 
                 <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs px-6 rounded-xl">
                     <table className="min-w-full divide-y divide-gray-200 text-sm">

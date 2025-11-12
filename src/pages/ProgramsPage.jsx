@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios"
-import Layout from "@/components/layout/Layout";
+
 import ErrorRoute from "@/router/ErrorRoute";
+import Layout from "@/components/layout/Layout";
 import ProgramCard from "@/components/elements/ProgramCard";
 import ProgramPreloader from "@/components/preloaders/ProgramPreloader";
+import PageHeader from "@/components/elements/PageHeader";
 
 export default function ProgramsPage() {
     const [programs, setPrograms] = useState([]);
@@ -42,10 +44,7 @@ export default function ProgramsPage() {
     return (
         <Layout>
             <div className="flex flex-col w-full gap-6">
-                <div className="flex w-full bg-white p-3 content-center rounded-lg text-nowrap">
-                    <p className="text-lg font-medium">All Programs</p>
-                    <div className="w-full" />
-                </div>
+                <PageHeader>All Programs</PageHeader>
                 {programs.length === 0 ? (
                     <p>No programs found.</p>
                 ) : (

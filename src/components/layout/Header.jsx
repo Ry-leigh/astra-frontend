@@ -1,6 +1,7 @@
 import { useLocation, Link} from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import NotificationPanel from "../elements/Notification";
 
 export default function Header() {
   const location = useLocation();
@@ -13,11 +14,11 @@ export default function Header() {
 
       <div className="flex w-full"/>
 
-      {/* replace with nontifications once availbale */}
       <div className="flex items-center gap-4">
-        <Link to={"/notifications"}>
+        <NotificationPanel/>
+        {/* <Link to={"/notifications"}>
           <NotificationsNoneOutlinedIcon />
-        </Link>
+        </Link> */}
       </div>
 
       {/* replace with profile dropdown once available & remove logout button*/}

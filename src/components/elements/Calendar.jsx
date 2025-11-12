@@ -7,7 +7,7 @@ import CalendarViewMonthOutlinedIcon from '@mui/icons-material/CalendarViewMonth
 import CalendarViewWeekOutlinedIcon from '@mui/icons-material/CalendarViewWeekOutlined';
 import CalendarViewDayOutlinedIcon from '@mui/icons-material/CalendarViewDayOutlined';
 import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
-import { PrimaryButtonOutlined } from './Buttons';
+import { PrimaryButtonOutlined, SecondaryButton } from './Buttons';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from "@/context/AuthContext";
 import api from "@/api/axios"
@@ -54,16 +54,19 @@ export function Navigation() {
     const active = "font-medium text-violet-800 border-b-3";
 
     return (
-        <div className="flex w-full text-sm border-b border-gray-200">
-            <NavLink to={`/calendar`} end className={({ isActive }) => `flex gap-3 items-center p-4 px-6 ${isActive ? active : "text-gray-500"}`}>
+        <div className="flex w-full border-b items-center text-sm border-gray-200">
+            <NavLink to={`/calendar`} end className={({ isActive }) => `flex gap-3 items-center p-4 pt-7 px-6 ${isActive ? active : "text-gray-500"}`}>
                 <EventNoteOutlinedIcon/>
                 <h2>Events</h2>
             </NavLink>
 
-            <NavLink to={`/schedule`} end className={({ isActive }) => `flex gap-3 items-center p-4 px-6 ${isActive ? active : "text-gray-500"}`}>
+            <NavLink to={`/schedule`} end className={({ isActive }) => `flex gap-3 items-center p-4 pt-7 px-6 ${isActive ? active : "text-gray-500"}`}>
                 <CalendarMonthOutlinedIcon />
                 <h2>Schedule</h2>
             </NavLink>
+
+            <div className='w-full'/>
+            <SecondaryButton>Add Event</SecondaryButton>
         </div>
     )
 }
@@ -127,12 +130,11 @@ export default function Calendar() {
     }
 
     return (
-        <div className="flex flex-col pb-4 px-2">
-            <Navigation />
+        <div>
             <div className="flex p-4 items-center gap-4">
                 <div className='flex gap-2 items-center'>
                     <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.subtract(1, "month"))}><KeyboardArrowLeftOutlinedIcon /></button>
-                    <p className="text-lg font-medium">{currentMonth.format("MMMM YYYY")}</p>
+                    <p className="text-lg font-medium">{currentMonth.format("MMM YYYY")}</p>
                     <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.add(1, "month"))}><KeyboardArrowRightOutlinedIcon /></button>
                 </div>
                 <div className='flex w-full'/>
