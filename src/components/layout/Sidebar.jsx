@@ -32,13 +32,13 @@ export default function Sidebar() {
     },
     Instructor:
     { top: [
-        { name: "Dashboard", path: "/dashboard", icon: <HomeIcon fontSize="small" /> },
+        { name: "Dashboard", path: "/dashboard", icon: <SpaceDashboardOutlinedIcon fontSize="small" /> },
         { name: "Calendar", path: "/calendar", icon: <CalendarTodayOutlinedIcon fontSize="small" /> },
-        { name: "Announcements", path: "/announcements", icon: <HomeIcon fontSize="small" /> },
-        { name: "Classes", path: "/classes", icon: <HomeIcon fontSize="small" /> }],
+        { name: "Announcements", path: "/announcements", icon: <CampaignOutlinedIcon fontSize="small" /> },
+        { name: "Classes", path: "/classes", icon: <LibraryBooksOutlinedIcon fontSize="small" /> }],
       bottom: [
-        { name: "Help", path: "/help", icon: <HomeIcon fontSize="small" /> },
-        { name: "Settings", path: "/settings", icon: <HomeIcon fontSize="small" /> }
+        { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
+        { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
       ]
     },
     Officer:
@@ -54,13 +54,13 @@ export default function Sidebar() {
     },
     Student:
     { top: [
-        { name: "Dashboard", path: "/dashboard", icon: <HomeIcon fontSize="small" /> },
-        { name: "Calendar", path: "/calendar", icon: <HomeIcon fontSize="small" /> },
-        { name: "Announcements", path: "/announcements", icon: <HomeIcon fontSize="small" /> },
-        { name: "Courses", path: "/classes", icon: <HomeIcon fontSize="small" /> }],
+        { name: "Dashboard", path: "/dashboard", icon: <SpaceDashboardOutlinedIcon fontSize="small" /> },
+        { name: "Calendar", path: "/calendar", icon: <CalendarTodayOutlinedIcon fontSize="small" /> },
+        { name: "Announcements", path: "/announcements", icon: <CampaignOutlinedIcon fontSize="small" /> },
+        { name: "Courses", path: "/classes", icon: <SchoolOutlinedIcon fontSize="small" /> }],
       bottom: [
-        { name: "Help", path: "/help", icon: <HomeIcon fontSize="small" /> },
-        { name: "Settings", path: "/settings", icon: <HomeIcon fontSize="small" /> }
+        { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
+        { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
       ]
     }
   };

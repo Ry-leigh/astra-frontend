@@ -9,6 +9,7 @@ import timeConverter from "@/components/elements/timeConverter";
 import AnnouncementPreloader from "@/components/preloaders/AnnouncementPreloader";
 import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/elements/PageHeader";
+import { EditButton, DeleteButton } from "@/components/elements/Buttons";
 
 export default function AnnouncementPage() {
     const [announcements, setAnnouncements] = useState([]);
@@ -84,12 +85,8 @@ export default function AnnouncementPage() {
                                         </td>
                                         {(role === 'Administrator') && (
                                             <td className="px-4 py-3 text-center space-x-3">
-                                                <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-gray-800 hover:bg-gray-200 transition" onClick={() => console.log("Edit", enrollee.student.user.id)}>
-                                                    E
-                                                </button>
-                                                <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-red-600 hover:bg-red-100 transition" onClick={() => console.log("Delete", enrollee.student.user.id)}>
-                                                    D
-                                                </button>
+                                                <EditButton size="small"/>
+                                                <DeleteButton size="small"/>
                                             </td>
                                         )}
                                     </tr>

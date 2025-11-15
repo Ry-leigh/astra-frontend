@@ -1,14 +1,11 @@
-import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
 import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
 import CalendarViewMonthOutlinedIcon from '@mui/icons-material/CalendarViewMonthOutlined';
 import CalendarViewWeekOutlinedIcon from '@mui/icons-material/CalendarViewWeekOutlined';
 import CalendarViewDayOutlinedIcon from '@mui/icons-material/CalendarViewDayOutlined';
 import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
-import { PrimaryButtonOutlined, SecondaryButton } from './Buttons';
-import { Link, NavLink } from 'react-router-dom';
+import { PrimaryButtonOutlined } from './Buttons';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from "@/context/AuthContext";
 import api from "@/api/axios"
 import { useState, useEffect } from "react";
@@ -47,27 +44,6 @@ export function CalendarRadio() {
             </NavLink>
         </div>
         
-    )
-}
-
-export function Navigation() {
-    const active = "font-medium text-violet-800 border-b-3";
-
-    return (
-        <div className="flex w-full border-b items-center text-sm border-gray-200">
-            <NavLink to={`/calendar`} end className={({ isActive }) => `flex gap-3 items-center p-4 pt-7 px-6 ${isActive ? active : "text-gray-500"}`}>
-                <EventNoteOutlinedIcon/>
-                <h2>Events</h2>
-            </NavLink>
-
-            <NavLink to={`/schedule`} end className={({ isActive }) => `flex gap-3 items-center p-4 pt-7 px-6 ${isActive ? active : "text-gray-500"}`}>
-                <CalendarMonthOutlinedIcon />
-                <h2>Schedule</h2>
-            </NavLink>
-
-            <div className='w-full'/>
-            <SecondaryButton>Add Event</SecondaryButton>
-        </div>
     )
 }
 
@@ -148,31 +124,31 @@ export default function Calendar() {
                         {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d => (
                             <div key={d} className="flex w-full h-full justify-center p-4">{d}</div>
                         ))}
-                    </div>                
+                    </div>
 
                 <div className="">
-                    {weeks.map((week, i) => (<WeekRow key={i} week={week} events={events} />))}
+                    {weeks.map((week, i) => (<WeekRow key={i} week={week} events={events} month={currentMonth} />))}
                 </div>
             </div>
         </div>
     );
 }
 
-function WeekRow({ week, events }) {
+function WeekRow({ week, events, month }) {
     const weekStart = week[0];
     const weekEnd = week[6];
 
-    // Track how many stacked "rows" (slots) are occupied per day column
+    // Track rows (slots)
     const occupied = Array(7).fill(0);
 
-    // Filter events that intersect with this week
+    // Filter, sort, and compute layout
     const weekEvents = events
         .filter(e => {
             const start = dayjs(e.start);
             const end = dayjs(e.end);
             return !(end.isBefore(weekStart) || start.isAfter(weekEnd));
         })
-        .sort((a, b) => dayjs(a.start).diff(dayjs(b.start))) // sort chronologically
+        .sort((a, b) => dayjs(a.start).diff(dayjs(b.start)))
         .map(e => {
             const start = dayjs(e.start);
             const end = dayjs(e.end);
@@ -180,13 +156,13 @@ function WeekRow({ week, events }) {
             const effectiveStart = start.isBefore(weekStart) ? weekStart : start;
             const effectiveEnd = end.isAfter(weekEnd) ? weekEnd : end;
 
-            const startCol = effectiveStart.day(); // Sunday = 0
+            const startCol = effectiveStart.day();
             const endCol = effectiveEnd.day();
 
-            // find the next available "slot" (row index) for this span
+            // get row slot
             const slot = Math.max(...occupied.slice(startCol, endCol + 1)) + 1;
 
-            // mark those columns as now occupied at this slot level
+            // mark columns
             for (let i = startCol; i <= endCol; i++) {
                 occupied[i] = slot;
             }
@@ -195,38 +171,49 @@ function WeekRow({ week, events }) {
                 ...e,
                 startCol,
                 span: endCol - startCol + 1,
-                slot, // we’ll use this as gridRowStart
+                slot
             };
         });
 
+    // Number of rows needed
+    const maxSlot = Math.max(0, ...occupied);
+    const rowHeight = 1.6; // rem per event row
+
     return (
-        <div className="relative border-l divide-x divide-y border-gray-200 divide-inherit grid grid-cols-7 min-h-24">
-        {week.map((d) => (
-                <div key={d.format("YYYY-MM-DD")}>
+        <div className="relative border-l border-b border-gray-200 grid grid-cols-7 min-h-24">
+
+            {/* Day cells */}
+            {week.map(d => (
+                <div key={d.format("YYYY-MM-DD")} className={`border-r border-gray-200 ${d.month() != month.month()? 'text-gray-300' : ''}`}>
                     <div className={`h-1/4 m-1 rounded-sm p-1 text-right text-sm ${d.isSame(dayjs(), "day") ? "bg-violet-100 font-medium " : ""}`}>
                         {d.date()}
                     </div>
-                    <div/>
+
+                    {/* event space */}
+                    <div style={{ height: `${maxSlot * rowHeight}rem` }} />
                 </div>
             ))}
 
-        <div className="absolute inset-0 grid grid-cols-7 pointer-events-none">
-            {weekEvents.map(event => (
-            <div
-                key={event.id}
-                className="bg-blue-100 h-fit m-1 border-l-4 border-blue-500 rounded-sm px-1 py-0.5 text-xs truncate pointer-events-auto cursor-pointer"
-                style={{
-                gridColumnStart: event.startCol + 1,
-                gridColumnEnd: `span ${event.span}`,
-                gridRowStart: event.slot + 1
-                }}
-                title={event.title}
-            >
-                {event.allDay ? '' : timeConverter(event.timeStart)} &nbsp;
-                {event.title}
+            {/* Event bars */}
+            <div className="absolute inset-0 grid grid-cols-7 auto-rows-min gap-y-1 pointer-events-none">
+                <div className="h-5 m-1 rounded-sm p-1 text-right text-sm "/>
+                {weekEvents.map(event => (
+                    <div
+                        key={event.id}
+                        className="flex bg-blue-100 h-5 mx-1 border-l-4 border-blue-500 rounded-sm px-1 text-xs items-center pointer-events-auto cursor-pointer"
+                        style={{
+                            gridColumnStart: event.startCol + 1,
+                            gridColumnEnd: `span ${event.span}`,
+                            gridRowStart: event.slot + 1,
+                        }}
+                        title={event.title}
+                    >
+                        <span className='w-fit truncate'>{event.allDay ? "" : timeConverter(event.timeStart)} {event.title}</span>
+                    </div>
+                ))}
             </div>
-            ))}
-        </div>
+
         </div>
     );
 }
+
