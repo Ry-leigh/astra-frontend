@@ -1,12 +1,3 @@
-.schedule-grid {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ccc;
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  overflow-x: auto;
-}
-
 .grid-row {
   display: grid;
   grid-template-columns: 80px repeat(6, 1fr); /* Time column + 6 days */

@@ -20,7 +20,7 @@ const WeeklyScheduleGrid = ({ scheduleData }) => {
   }, {});
 
   return (
-    <div className="schedule-grid">
+    <div className="flex flex-col border border-gray-200 font-normal">
       {/* Header Row */}
       <div className="grid-row header">
         <div className="grid-cell time-col"></div>
