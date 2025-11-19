@@ -5,6 +5,7 @@ import Layout from "@/components/layout/Layout";
 import ClassroomPreloader from "@/components/preloaders/ClassroomPreloader";
 import ErrorRoute from "@/router/ErrorRoute";
 import { useParams } from "react-router-dom";
+import PageHeader from "@/components/elements/PageHeader";
 
 export default function ClassroomPage() {
     const { id } = useParams();
@@ -46,8 +47,7 @@ export default function ClassroomPage() {
     return(
         <Layout>
             <div className="flex flex-col w-full gap-6">
-                <div className="flex w-full bg-white p-3 content-center rounded-lg text-nowrap">
-                    <p className="text-lg font-medium">{program.name} Sections</p>
+                <PageHeader title={`${program.name} Sections`}>
                     <div className="w-full" />
                     <div className="flex items-center">
                         <p className="font-medium">A.Y.</p>
@@ -56,7 +56,7 @@ export default function ClassroomPage() {
                             2025 - 2026
                         </div>
                     </div>
-                </div>
+                </PageHeader>
             {classrooms.length === 0 ? (
                 <p>No classrooms found.</p>
             ) : (

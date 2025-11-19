@@ -49,7 +49,7 @@ export default function ClassesPage() {
   return (
     <Layout>
       <div className="flex flex-col w-full gap-6">
-        <PageHeader>Your {role === 'Instructor'? 'Classes' : 'Courses'}</PageHeader>
+        <PageHeader title={`Your ${role === 'Instructor'? 'Classes' : 'Courses'}`}></PageHeader>
         {classes.length === 0 ? (
           <p>No class found.</p>
         ) : (

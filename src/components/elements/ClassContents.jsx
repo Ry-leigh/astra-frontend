@@ -11,6 +11,7 @@ dayjs.extend(weekday);
 
 import ErrorRoute from "@/router/ErrorRoute";
 
+import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
 import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
 import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -18,7 +19,81 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CheckOutlinedRoundedIcon from '@mui/icons-material/CheckOutlined';
 import { PrimaryButtonOutlined, EditButton, DeleteButton } from '@/components/elements/Buttons';
 
-export function ClassIndex({ enrollees, role }) {
+function UnenrollModal({ open, setUnenrollModalOpen, enrollmentId, setEnrolleeList }) {
+    const [loading, setLoading] = useState(false);
+
+    const handleUnenrollStudent = async (id) => {
+        setLoading(true);
+        try {
+            const response = await api.delete(`/enrollments/${enrollmentId}`);
+            if (response.data.success) {
+                console.log("Student Unenrolled:", response.data);
+                setEnrolleeList(prev => prev.filter(e => e.id !== id));
+            } else {
+                throw new Error("Failed to unenroll student");
+            }
+        } catch (error) {
+            console.error("Error unenrolling student:", error);
+        } finally {
+            setLoading(false);
+            setUnenrollModalOpen(false);
+        }
+    };
+
+    return (
+        <div onClick={() => setUnenrollModalOpen(false)} className={`fixed inset-0 flex justify-center items-center transition-colors ${open ? "visible bg-black/10" : "invisible"}`}>
+            <div onClick={e => e.stopPropagation()} className={`flex bg-white rounded-lg shadow transition-all ${open ? "scale-100 opacity-100" : "scale-110 opacity-0"}`}>
+                <div className="flex flex-col bg-white rounded-xl p-6 gap-6">
+                    <div>Are you sure to unenroll this student?</div>
+                    <div className="flex justify-around">
+                        <button
+                            className="flex bg-red-400 hover:bg-red-500 rounded-lg px-4 py-2 text-white"
+                            onClick={() => handleUnenrollStudent(enrollmentId)}
+                        >
+                            {loading ? "Processing..." : "Confirm"}
+                        </button>
+                        <button className="flex bg-slate-200 hover:bg-slate-300 rounded-lg px-4 py-2" onClick={() => setUnenrollModalOpen(false)}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export function ClassIndex({ classCourseId, role }) {
+    const [unenrollModalOpen, setUnenrollModalOpen] = useState(false);
+    const [selectedEnrollmentId, setSelectedEnrollmentId] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [enrollees, setEnrollees] = useState([]);
+
+    const fetchEnrollees = async () => {
+        try {
+            const response = await api.get(`/class/${classCourseId}`);
+            if(response.data.success){
+                setEnrollees(response.data.class.enrollments)
+            } else {
+                throw new Error("Failed to load class");
+            }
+        } catch (error) {
+            console.error("Error fetching class:", error);
+            setError(error?.response?.status || 404);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEnrollees();
+    }, [classCourseId]);
+
+        if (loading) return (
+            <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl scrollbar-none">
+                Loading Enrollees...
+            </div>
+    );
+
     return (
         <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs px-6 rounded-xl scrollbar-none">
             <table className="min-w-full divide-y divide-gray-200 text-sm">
@@ -42,10 +117,12 @@ export function ClassIndex({ enrollees, role }) {
                             </td>
                             <td className="px-4 py-3 text-gray-700">{enrollee.student.user.email}</td>
                             <td className="px-4 py-3 text-gray-700">{enrollee.student.user.roles[0].name}</td>
-                            {(role === 'Administrator') && (
+                            {(role === 'Administrator' || role === 'Instructor') && (
                                 <td className="px-4 py-3 text-center space-x-3">
-                                    <EditButton size="small"/>
-                                    <DeleteButton size="small"/>
+                                    {(role === 'Administrator') && ( <EditButton size="small"/> )}
+                                    <button className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition text-xl" onClick={() => {setSelectedEnrollmentId(enrollee.id); setUnenrollModalOpen(true);}}>
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="inherit"/>
+                                    </button>
                                 </td>
                             )}
                         </tr>
@@ -59,6 +136,7 @@ export function ClassIndex({ enrollees, role }) {
                     )}
                 </tbody>
             </table>
+            <UnenrollModal open={unenrollModalOpen} setUnenrollModalOpen={setUnenrollModalOpen} enrollmentId={selectedEnrollmentId} setEnrolleeList={setEnrollees}/>
         </div>
     )
 }

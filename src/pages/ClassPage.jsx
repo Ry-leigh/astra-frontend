@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-import AddIcon from '@mui/icons-material/Add';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 import ErrorRoute from "@/router/ErrorRoute";
 import ClassPreloader from "@/components/preloaders/ClassPreloader";
@@ -58,7 +58,7 @@ function Header({ course = { name: '' }, instructor = { first_name: '', last_nam
     );
 }
 
-function IndexTab({ enrollees, role }) { return <ClassIndex enrollees={enrollees} role={role} /> }
+function IndexTab({ classCourseId, role }) { return <ClassIndex classCourseId={classCourseId} role={role} /> }
 function AttendanceTab({ role = '', date = '' }) { return <ClassAttendance role={role} date={date} /> }
 function TaskTab({ role = '' }) { return <ClassTask role={role} /> }
 function AnnouncementTab({ role = '' }) { return <ClassAnnouncement role={role}/> }
@@ -67,7 +67,6 @@ export default function ClassPage() {
     const { classCourseId, date } = useParams();
     const [course, setCourse] = useState([]);
     const [instructor, setInstructor] = useState([]);
-    const [enrollees, setEnrollees] =useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [role, setRole] = useState('');
@@ -80,7 +79,6 @@ export default function ClassPage() {
             if(response.data.success){
                 setCourse(response.data.class.course);
                 setInstructor(response.data.class.instructor.user);
-                setEnrollees(response.data.class.enrollments)
             } else {
                 throw new Error("Failed to load class");
             }
@@ -108,7 +106,6 @@ export default function ClassPage() {
         <div className="flex flex-col w-full gap-4 items-end">
             <Header />
             <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl scrollbar-none">
-                Loading Enrollees...
             </div>
         </div>
     );
@@ -118,15 +115,15 @@ export default function ClassPage() {
             <div className="flex flex-col w-full gap-4 items-end">
                 <Header course={course} instructor={instructor} role={role} activeTab={activeTab} handleTabChange={handleTabChange}>
                     {((role === 'Administrator' || role === 'Instructor') && activeTab == 'students') && (
-                        <PrimaryButton><AddIcon/><span className="text-base text-nowrap">Enroll Student</span></PrimaryButton>
+                        <PrimaryButton><AddRoundedIcon/><span className="text-base text-nowrap">Enroll Student</span></PrimaryButton>
                     )}
                     {(activeTab == 'attendance') && (<PrimaryButton><span className="text-base text-nowrap">View Class Sessions</span></PrimaryButton>)}
-                    {((role === 'Administrator' || role === 'Instructor') && activeTab == 'tasks') && (<PrimaryButton><AddIcon/><span className="text-base text-nowrap">Task</span></PrimaryButton>)}
-                    {((role === 'Administrator' || role === 'Instructor') && activeTab == 'announcements') && (<PrimaryButton><AddIcon/><span className="text-base text-nowrap">Announcement</span></PrimaryButton>)}
+                    {((role === 'Administrator' || role === 'Instructor') && activeTab == 'tasks') && (<PrimaryButton><AddRoundedIcon/><span className="text-base text-nowrap">Task</span></PrimaryButton>)}
+                    {((role === 'Administrator' || role === 'Instructor') && activeTab == 'announcements') && (<PrimaryButton><AddRoundedIcon/><span className="text-base text-nowrap">Announcement</span></PrimaryButton>)}
                 </Header>
                 {
                     activeTab === "students" ? (
-                        <IndexTab enrollees={enrollees} role={role} />
+                        <IndexTab classCourseId={classCourseId} role={role} />
                     ) : activeTab === "attendance" ? (
                         <AttendanceTab role={role} date={date || ''}/>
                     ) : activeTab === "tasks" ? (

@@ -3,7 +3,7 @@ import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/Indeterminate
 
 export function PrimaryButton ({ children }) {
     return (
-        <button className="flex w-fit h-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-sm font-medium hover:bg-blue-500">
+        <button className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-sm font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20">
             {children}
         </button>
     )
@@ -19,7 +19,7 @@ export function PrimaryButtonOutlined ({ children }) {
 
 export function SecondaryButton ({ children }) {
     return (
-        <button className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-violet-700 text-white text-sm font-medium hover:bg-violet-800">
+        <button className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-violet-600 text-white text-sm font-medium cursor-pointer hover:bg-violet-700 hover:shadow-md/20">
             {children}
         </button>
     )

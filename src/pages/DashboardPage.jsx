@@ -5,7 +5,7 @@ export default function DashboardPage() {
   return (
     <Layout>
       <div className="flex flex-col w-full">
-      <PageHeader>Dashboard</PageHeader>
+        <PageHeader title="Dashboard"/>
       </div>
     </Layout>
   );

@@ -41,7 +41,7 @@ export default function AnnouncementPage() {
     if (loading) return (
         <Layout>
             <div className="flex flex-col h-full w-full gap-6">
-                <PageHeader>Announcements</PageHeader>
+                <PageHeader title="Announcements"></PageHeader>
                 <AnnouncementPreloader />
             </div>
         </Layout>
@@ -52,7 +52,7 @@ export default function AnnouncementPage() {
     return (
         <Layout>
             <div className="flex flex-col h-full w-full gap-6">
-                <PageHeader>Announcements</PageHeader>
+                <PageHeader title="Announcements"/>
                 <div className="flex flex-col h-full overflow-y-auto bg-white w-full px-6 rounded-xl">
                     <table className="min-w-full divide-y divide-gray-200 text-sm">
                         <thead className="sticky top-0 bg-white">

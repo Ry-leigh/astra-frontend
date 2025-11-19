@@ -105,7 +105,7 @@ export default function Calendar() {
 
     return (
         <div>
-            <div className="flex p-4 items-center gap-4">
+            <div className="flex pl-4 py-4 items-center gap-4 pr-1">
                     {
                         activeTab === "month" ? (
                             <div className='flex gap-2 items-center'>
@@ -175,11 +175,85 @@ function WeekView({ events, currentDay }) {
 
     const week = Array.from({ length: 7 }, (_, i) => sunday.add(i, "day").clone());
 
+    const weekStart = week[0];
+    const weekEnd = week[6];
+
+    const SLOT_PX = 24; // tweak to taste (20, 24, 30, ...)
+    const slotPxStr = `${SLOT_PX}px`;
+
     const timeSlots = Array.from({ length: 48 }, (_, i) => {
         const hour = Math.floor(i / 2);
         const minute = i % 2 === 0 ? "00" : "30";
         return `${hour.toString().padStart(2, "0")}:${minute}`;
     });
+
+    const allDayEvents = events.filter(e => {
+        const start = dayjs(e.start);
+        const end = dayjs(e.end);
+
+        const isMultiDay = !start.isSame(end, "day");
+        return e.allDay || isMultiDay;
+    });
+
+    const occupied = Array(7).fill(0);
+
+    const laidOutAllDay = allDayEvents.filter(e => {
+        const start = dayjs(e.start);
+        const end = dayjs(e.end);
+        return !(end.isBefore(weekStart) || start.isAfter(weekEnd));
+    }).sort((a, b) => dayjs(a.start).diff(dayjs(b.start))).map(e => {
+        const start = dayjs(e.start);
+        const end = dayjs(e.end);
+
+        const effectiveStart = start.isBefore(weekStart) ? weekStart : start;
+        const effectiveEnd = end.isAfter(weekEnd) ? weekEnd : end;
+
+        const startCol = effectiveStart.day();
+        const endCol = effectiveEnd.day();
+
+        const slot = Math.max(...occupied.slice(startCol, endCol + 1)) + 1;
+
+        for (let i = startCol; i <= endCol; i++) {
+            occupied[i] = slot;
+        }
+
+        return {
+            ...e,
+            startCol,
+            span: endCol - startCol + 1,
+            slot
+        };
+    });
+
+    const maxAllDaySlots = Math.max(1, ...occupied);
+
+    const timedEvents = events.filter(event => !event.allDay);
+
+    const laidOutTimed = timedEvents.flatMap((event) => {
+        const start = dayjs(event.start);
+        const end = dayjs(event.end);
+
+        if (end.isBefore(weekStart) || start.isAfter(weekEnd)) return [];
+
+        const dayIndex = start.day();
+
+        const timeStart = dayjs(event.timeStart, "HH:mm:ss");
+        const timeEnd = event.timeEnd ? dayjs(event.timeEnd, "HH:mm:ss") : timeStart.add(1, "hour");
+
+        const startSlot = timeStart.hour() * 2 + (timeStart.minute() >= 30 ? 2 : 1);
+        const endSlot = timeEnd.hour() * 2 + (timeEnd.minute() >= 30 ? 2 : 1);
+
+        const span = Math.max(1, endSlot - startSlot);
+
+        return {
+            ...event,
+            dayIndex,
+            startSlot,
+            span
+        };
+    });
+
+
 
     return (
         <div className="flex flex-col border rounded-md p-4 border-gray-200 overflow-hidden h-fit">
@@ -187,38 +261,83 @@ function WeekView({ events, currentDay }) {
                 <div className="bg-slate-100" />
                 {week.map(day => (
                 <div key={day.toString()} className="flex justify-center p-4">
-                    {day.format("ddd D")}
+                        {day.format("ddd D")}
                 </div>
                 ))}
             </div>
 
-            <div className={`grid grid-cols-[60px_repeat(7,1fr)] divide-x divide-gray-200 overflow-y-scroll scrollbar-none border-x border-b border-gray-200`} style={{ gridTemplateRows: `repeat(${allDayEventCount}, 1fr)` }}>
-                <div className="flex p-2 text-xs justify-center items-center font-medium bg-slate-100 row-span-full">
+            <div className="relative grid grid-cols-[60px_repeat(7,1fr)] border-x border-b border-gray-200">
+                <div className="flex justify-center items-center text-xs font-medium bg-slate-100 border-r border-gray-200">
                     All day
                 </div>
+                
                 {week.map((day, i) => (
-                    <div key={day.toString()} className={`border-gray-200 p-2 ${day.isSame(dayjs(), "day")? 'bg-violet-100':''}`}>
-
+                    <div key={day.toString()} className={`border-r border-gray-200 p-2 ${day.isSame(dayjs(), "day") ? "bg-violet-100" : ""}`}>
+                        <div style={{ height: `${maxAllDaySlots * 1.4}rem` }} />
                     </div>
                 ))}
+
+                <div className="absolute inset-0 grid grid-cols-[60px_repeat(7,1fr)] gap-y-1 auto-rows-min pointer-events-none">
+                    <div />
+                    {laidOutAllDay.map(event => (
+                        <div key={event.id}
+                            className="bg-blue-100 h-5 mx-1 border-l-4 border-blue-500 rounded-sm px-1 text-xs flex items-center pointer-events-auto"
+                            style={{
+                                gridColumnStart: event.startCol + 2,  // +2 because column 1 = label
+                                gridColumnEnd: `span ${event.span}`,
+                                gridRowStart: event.slot + 1,
+                            }}
+                        >
+                            {event.title}
+                        </div>
+                    ))}
+                </div>
             </div>
 
+            <div className="relative grid grid-cols-[60px_repeat(7,1fr)] divide-x divide-gray-200 h-100 overflow-y-scroll scrollbar-none border-l border-b border-gray-200" style={{ gridAutoRows: slotPxStr }}>
+                <div className='bg-slate-100 p-1'>&nbsp;</div>
+                {week.map(day => (
+                    <div key={day.toString()} className={`${day.isSame(dayjs(), "day") ? "bg-violet-100" : ""}`}/>
+                ))}
+                <div className='bg-slate-100 border-b border-gray-200 p-1'>&nbsp;</div>
+                {week.map(day => (
+                    <div key={day.toString()} className={`border-b border-gray-200 ${day.isSame(dayjs(), "day") ? "bg-violet-100" : ""}`}/>
+                ))}
 
-            <div className="grid grid-cols-[60px_repeat(7,1fr)] divide-x divide-gray-200 h-106 overflow-y-scroll scrollbar-none border-l border-b border-gray-200">
                 {timeSlots.map((time, i) => (
                     <Fragment key={time}>
-                        {i % 2 == 1 ? (<></>) : (
-                            <div className="flex p-2 text-xs justify-center items-center font-medium bg-slate-100 border-b border-gray-200 row-span-2">
-                                {time}
+                        {i % 2 == 1 ? null : (
+                            <div className="relative flex text-xs overflow-visible justify-center items-center font-medium bg-slate-100 border-b border-gray-200" style={{ gridRow: `span 2` }}>
+                                <div className='absolute overflow-visible -top-2 bg-slate-100 px-1'>
+                                    {time}
+                                </div>
                             </div>
                         )}
                         
                         {week.map(day => (
-                            <div key={day.toString() + time} className={`${i%2 == 1? 'border-b' : ''} border-gray-200 p-2 ${day.isSame(dayjs(), "day")? 'bg-violet-100':''} `}>
-                            </div>
+                            <div key={day.toString() + time} className={`${i % 2 === 1 ? "border-b border-gray-200" : ""}  ${day.isSame(dayjs(), "day") ? "bg-violet-100" : ""}`}/>
                         ))}
                     </Fragment>
                 ))}
+
+                <div className="absolute inset-0 grid grid-cols-[60px_repeat(7,minmax(0,1fr))] pointer-events-none" style={{ gridAutoRows: slotPxStr }}>
+                    {console.log(laidOutTimed)}
+                    {laidOutTimed.map(event => (
+                        <div key={event.id}
+                            className="bg-blue-100 w-full border-l-4 border-blue-500 text-xs p-1 rounded-sm pointer-events-auto cursor-pointer"
+                            style={{
+                                gridColumn: event.dayIndex + 2,
+                                gridRowStart: event.startSlot + 2,
+                                gridRowEnd: `span ${event.span}`,
+                            }}
+                        >
+                            <div className='flex flex-col gap-1 w-full h-full overflow-hidden'>
+                                <p className='flex truncate'>{event.title}</p>
+                                <p>{event.timeStart} – {event.timeEnd? event.timeEnd : 'TBD'}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
