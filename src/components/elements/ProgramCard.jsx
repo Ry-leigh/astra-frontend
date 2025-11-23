@@ -8,7 +8,6 @@ export default function ProgramCard({ programId, programName, programDesc, color
     const [openMenu, setOpenMenu] = useState(false);
     const menuRef = useRef(null);
 
-    // Close dropdown on outside click
     useEffect(() => {
         function handleClickOutside(e) {
             if (menuRef.current && !menuRef.current.contains(e.target)) {

@@ -52,7 +52,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <Layout>
+    <>
       <div className="flex flex-col w-full gap-6">
         <PageHeader title="Calendar"/>
         <div className="flex flex-col w-full bg-white px-3 content-center rounded-lg text-nowrap">
@@ -62,6 +62,6 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

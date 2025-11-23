@@ -7,7 +7,6 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 import ErrorRoute from "@/router/ErrorRoute";
 import ClassPreloader from "@/components/preloaders/ClassPreloader";
-import Layout from "@/components/layout/Layout";
 import { PrimaryButton, EditButton } from "@/components/elements/Buttons";
 import { ClassIndex, ClassAttendance, ClassTask, ClassAnnouncement } from "@/components/elements/ClassContents";
 

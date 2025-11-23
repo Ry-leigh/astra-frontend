@@ -1,7 +1,6 @@
 import api from "../api/axios"
 import { useEffect, useState } from "react";
 
-import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/elements/PageHeader";
 import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
 
@@ -64,13 +63,13 @@ export function NotificationList() {
 
 export default function NotificationPage() {
     return(
-        <Layout>
+        <>
             <div className="flex flex-col h-full w-full gap-6">
                 <PageHeader title="Notifications"/>
                 <div className="flex flex-col h-full overflow-y-auto bg-white w-full rounded-xl">
                     <NotificationList/>
                 </div>
             </div>
-        </Layout>
+        </>
     );
 }

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axios";
 
-import Layout from "@/components/layout/Layout";
 import ErrorRoute from "@/router/ErrorRoute";
 import CourseCard from "@/components/elements/CourseCard";
 import CoursePreloader from "@/components/preloaders/CoursePreloader";
@@ -38,15 +37,15 @@ export default function CoursePage() {
   }, []);
 
   if (loading) return (
-      <Layout>
+      <>
         <CoursePreloader />
-      </Layout>
+      </>
     );
 
   if (error) return <ErrorRoute code={error} />;
 
   return (
-    <Layout>
+    <>
       <div className="flex flex-col w-full gap-6">
         <div className="flex w-full bg-white p-3 content-center rounded-lg text-nowrap">
             <p className="text-lg font-medium">{classroom} Courses</p>
@@ -58,12 +57,12 @@ export default function CoursePage() {
                     1st Sem
                 </div>
             </div>
-        </div>
+        </div>    
         {courses.length === 0 ? (
           <p>No courses found.</p>
         ) : (
           <div className="flex min-h-9/11 h-full overflow-y-auto scrollbar-none rounded-lg">
-            <div className="grid h-fit grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid h-fit w-full grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
               {courses.map((item) => {
                 const course = item.course;
                 const instructor = item.instructor?.user;
@@ -88,6 +87,6 @@ export default function CoursePage() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 }

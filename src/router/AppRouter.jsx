@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, Link  } from "react-router-dom";
 import ErrorRoute from "./ErrorRoute";
 import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage";
@@ -27,25 +27,29 @@ export default function AppRouter() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      
-      <Route path="/dashboard" element={<PrivateRoute> <DashboardPage /> </PrivateRoute>}/>
-      <Route path="/calendar" element={<PrivateRoute> <CalendarPage /> </PrivateRoute>}/>
-      <Route path="/announcements" element={<PrivateRoute> <AnnouncementPage /> </PrivateRoute>}/>
-      
-      <Route path="/programs" element={<PrivateRoute> <ProgramsPage /> </PrivateRoute>}/>
-      <Route path="/classrooms/:id" element={<PrivateRoute> <ClassroomPage /> </PrivateRoute>}/>
-      <Route path="/courses/:id" element={<PrivateRoute> <CoursePage /> </PrivateRoute>}/>
 
-      <Route path="/classes" element={<PrivateRoute> <ClassesPage /> </PrivateRoute>}/>
-      <Route path="/class/:classCourseId/:date?" element={<PrivateRoute> <Layout><ClassPage /></Layout> </PrivateRoute>}/>
+      {/* Protected routes */}
+      <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/announcements" element={<AnnouncementPage />} />
 
-      <Route path="/users" element={<PrivateRoute> <UsersPage /> </PrivateRoute>}/>
-      <Route path="/users/create" element={<PrivateRoute> <CreateUserPage /> </PrivateRoute>}/>
-      <Route path="/users/:id" element={<PrivateRoute> <EditUserPage /> </PrivateRoute>}/>
-      <Route path="/help" element={<PrivateRoute> <HelpPage /> </PrivateRoute>}/>
-      <Route path="/settings" element={<PrivateRoute> <SettingsPage /> </PrivateRoute>}/>
-      <Route path="/profile" element={<PrivateRoute> <ProfilePage /> </PrivateRoute>}/>
-      <Route path="/notifications" element={<PrivateRoute> <NotificationPage /> </PrivateRoute>}/>
+        <Route path="/programs" element={<ProgramsPage />} />
+        <Route path="/classrooms/:id" element={<ClassroomPage />} />
+        <Route path="/courses/:id" element={<CoursePage />} />
+
+        <Route path="/classes" element={<ClassesPage />} />
+        <Route path="/class/:classCourseId/:date?" element={<ClassPage />} />
+
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/users/create" element={<CreateUserPage />} />
+        <Route path="/users/:id" element={<EditUserPage />} />
+
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/notifications" element={<NotificationPage />} />
+      </Route>
 
       {/* Custom error routes */}
       <Route path="*" element={<ErrorRoute code={404} />} />

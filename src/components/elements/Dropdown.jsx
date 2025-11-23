@@ -26,7 +26,7 @@ export function FloatingLabelDropdown({
     options.find((o) => o.value === value)?.label || "";
 
   return (
-    <div className="relative w-full" ref={wrapperRef}>
+    <div className="relative h-full w-full" ref={wrapperRef}>
       {/* Hidden input so this dropdown becomes part of POST request */}
       <input type="hidden" name={name} value={value ?? ""} />
 
@@ -141,15 +141,15 @@ export function Dropdown({
     options.find((o) => o.value === value)?.label || label;
 
   return (
-    <div className="relative w-full" ref={wrapperRef}>
+    <div className="relative h-full w-full" ref={wrapperRef}>
       {/* Display Box */}
       <div
         onClick={() => setOpen((o) => !o)}
-        className={`border rounded-lg px-4 py-3 cursor-pointer bg-white
+        className={`h-full border rounded-lg px-4 py-3 cursor-pointer bg-white
           text-gray-800 select-none flex justify-between items-center
           transition-all duration-150
-          hover:border-gray-400
-          ${open ? "border-blue-500 ring-2 ring-blue-300" : "border-gray-300"}
+          hover:bg-zinc-50
+          ${open ? "border-transparent ring-2 ring-blue-300" : "border-gray-300"}
         `}
       >
         <span className={`${value ? "" : "text-gray-400"}`}>

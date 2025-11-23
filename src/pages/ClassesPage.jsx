@@ -39,15 +39,14 @@ export default function ClassesPage() {
   }, []);
 
   if (loading) return (
-      <Layout>
+ 
         <ClassesPreloader />
-      </Layout>
+
     );
 
   if (error) return <ErrorRoute code={error} />;
 
   return (
-    <Layout>
       <div className="flex flex-col w-full gap-6">
         <PageHeader title={`Your ${role === 'Instructor'? 'Classes' : 'Courses'}`}></PageHeader>
         {classes.length === 0 ? (
@@ -83,6 +82,5 @@ export default function ClassesPage() {
           </div>
         )}
       </div>
-    </Layout>
   );
 }

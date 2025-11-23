@@ -5,7 +5,6 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ErrorRoute from "@/router/ErrorRoute";
-import Layout from "@/components/layout/Layout";
 import ProgramCard from "@/components/elements/ProgramCard";
 import ProgramPreloader from "@/components/preloaders/ProgramPreloader";
 import PageHeader from "@/components/elements/PageHeader";
@@ -46,15 +45,15 @@ export default function ProgramsPage() {
     }, []);
 
     if (loading) return (
-        <Layout>
+        <>
             <ProgramPreloader />
-        </Layout>
+        </>
     );
 
     if (error) return <ErrorRoute code={error} />;
 
     return (
-        <Layout>
+        <>
             <div className="flex flex-col h-full w-full gap-4">
                 <PageHeader title="All Programs"/>
                 <div className="flex flex-col h-full w-full gap-4 bg-white rounded-lg p-4">
@@ -109,6 +108,6 @@ export default function ProgramsPage() {
                 program={selectedProgram}
                 onSuccess={fetchPrograms}
             />
-        </Layout>
+        </>
     )
 }

@@ -7,7 +7,6 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
 
-import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/elements/PageHeader";
 import UserPreloader from "@/components/preloaders/UserPreloader";
 import ErrorRoute from "@/router/ErrorRoute";
@@ -39,15 +38,15 @@ export default function UsersPage() {
     }, [])
 
     if (loading) return (
-        <Layout>
+        <>
             <UserPreloader />
-        </Layout>
+        </>
     );
 
     if (error) return <ErrorRoute code={error} />;
 
     return(
-        <Layout>
+        <>
             <div className="flex flex-col w-full gap-4">
                 <PageHeader title="Users"/>
 
@@ -110,6 +109,6 @@ export default function UsersPage() {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </>
     );
 }

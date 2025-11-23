@@ -10,7 +10,7 @@ export default function TextInput({
   autoCapitalize = "none",
   placeholder = " "
 }) {
-  const isFilled = value && value.length > 0;
+  const isFilled = value;
 
   return (
     <div className="relative w-full">

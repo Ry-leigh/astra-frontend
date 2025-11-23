@@ -223,7 +223,7 @@ export default function EditAnnouncementForm({ announcementId, onSuccess, onClos
                     disabled={loading}
                     className="flex w-full h-fit justify-center py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-md font-medium hover:bg-blue-500"
                 >
-                    {formLoading ? "Updating..." : "Update Announcement"}
+                    {formLoading ? "Updating..." : "Edit Announcement"}
                 </button>
             </div>
         </form>

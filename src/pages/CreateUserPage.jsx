@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
-import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/elements/PageHeader";
 import TextInput from "@/components/elements/TextInput";
 import { FloatingLabelDropdown } from "@/components/elements/Dropdown";
@@ -154,16 +153,16 @@ export default function CreateUserPage() {
   }, [program, yearLevel, classrooms]);
 
   if (loading) return (
-    <Layout>
+    <>
       <PageHeader title="Create User"/>
         <div className="flex flex-col h-full bg-white rounded-xl p-6 pt-8 gap-6"/>
-    </Layout>
+    </>
   )
 
   if (error) return <ErrorRoute code={error} />;
 
   return (
-    <Layout>
+    <>
       <div className="flex flex-col w-full h-full gap-4">
         <PageHeader title="Create User"/>
         <form onSubmit={handleSubmit} className="flex flex-col h-full bg-white rounded-xl p-6 pt-8 gap-6">
@@ -333,6 +332,6 @@ export default function CreateUserPage() {
           </button>
         </form>
       </div>
-    </Layout>
+    </>
   );
 }

@@ -89,29 +89,28 @@ export default function AnnouncementPage() {
     };
 
     return (
-        <Layout>
-            <div className="flex flex-col h-full w-full gap-4">
-                <PageHeader title="Announcements"/>
+        <div className="flex flex-col h-full w-full gap-4">
+            <PageHeader title="Announcements"/>
 
-                <div className="flex flex-col h-full overflow-y-auto bg-white w-full px-6 gap-4 rounded-xl">
-                    <Navigation activeTab={activeTab} handleTabChange={handleTabChange} role={role}>
-                        {(role === 'Administrator') && (
-                            <button type="button" onClick={() => setOpenCreateModal(true)} className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-violet-600 text-white text-base font-medium cursor-pointer hover:bg-violet-700 hover:shadow-md/20">
-                                <AddRoundedIcon/> Add Announcement
-                            </button>
-                        )}
-                    </Navigation>
-                    {activeTab === "general" ? <GeneralAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/> 
-                    : activeTab === "programs" ? <ProgramAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>
-                    : activeTab === "class" ? <ClassAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>
-                    : activeTab === "past" ? <PastAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>
-                    : <AllAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>}
-                </div>
+            <div className="flex flex-col h-full overflow-y-auto bg-white w-full px-6 gap-4 rounded-xl">
+                <Navigation activeTab={activeTab} handleTabChange={handleTabChange} role={role}>
+                    {(role === 'Administrator') && (
+                        <button type="button" onClick={() => setOpenCreateModal(true)} className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-violet-600 text-white text-base font-medium cursor-pointer hover:bg-violet-700 hover:shadow-md/20">
+                            <AddRoundedIcon/> Add Announcement
+                        </button>
+                    )}
+                </Navigation>
+                {activeTab === "general" ? <GeneralAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/> 
+                : activeTab === "programs" ? <ProgramAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>
+                : activeTab === "class" ? <ClassAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>
+                : activeTab === "past" ? <PastAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>
+                : <AllAnnouncements loading={loading} error={error} role={role} announcements={announcements} targetCatalog={targetCatalog} fetchAnnouncements={fetchAnnouncements}/>}
             </div>
             <Modal open={openCreateModal} onClose={() => setOpenCreateModal(false)} title="Create New Announcement">
                 <CreateAnnouncementForm  onSuccess={fetchAnnouncements} onClose={() => setOpenCreateModal(false)} />
             </Modal>
-        </Layout>
+        </div>
+            
     );
 }
 

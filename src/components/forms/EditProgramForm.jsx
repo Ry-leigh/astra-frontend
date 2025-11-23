@@ -76,7 +76,7 @@ export default function EditProgramForm({ data, onSuccess, onClose }) {
                 disabled={loading}
                 className="flex w-full h-fit justify-center py-2 rounded-md gap-2 items-center bg-blue-500 text-white text-md font-medium hover:bg-blue-600"
             >
-                {loading ? "Updating..." : "Update Program"}
+                {loading ? "Updating..." : "Edit Program"}
             </button>
         </form>
     );

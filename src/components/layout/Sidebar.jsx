@@ -12,8 +12,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+export default function Sidebar({ collapsed=false }) {
   const { user, loading } = useAuth();
 
   const menus = {
@@ -76,11 +75,11 @@ export default function Sidebar() {
   const userMenus = menus[user.roles[0].name] || menus["student"];
 
   return (
-    <aside className="bg-white h-screen w-65 transition-all duration-300 flex flex-col px-4 pb-8">
+    <aside className={`bg-white h-screen ${collapsed ? 'w-21.5' : 'w-3xs'} transition-all duration-300 flex flex-col px-4 pb-8`}>
       <div className="flex items-center px-2 py-5">
-        <Link className="flex w-fit h-full gap-4" to={"/"}>
+        <Link className="flex items-center w-fit h-10 gap-4" to={"/"}>
           <div className="bg-violet-600 h-full aspect-square rounded-full" />
-          <span className="font-bold text-xl my-1">ASTRA</span>
+          {!collapsed && <div className="font-bold text-xl">ASTRA</div>}
         </Link>
       </div>
 
