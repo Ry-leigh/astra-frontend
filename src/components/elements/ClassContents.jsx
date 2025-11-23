@@ -232,17 +232,17 @@ export function ClassAttendance({ role = '', date = ''}) {
 
         return (
             <div className="relative w-1/3">
-                <button ref={buttonRef} onClick={() => setOpen(!open)} className={`flex items-center py-1 px-2 justify-between w-full border border-gray-200 rounded-md ${bg}`}>
+                <button ref={buttonRef} onClick={() => setOpen(!open)} className={`flex items-center py-1 px-2 justify-between gap-1 w-full border border-gray-200 rounded-md ${bg}`}>
                     <span className="capitalize">{status}</span>
 
                     {open ? (
-                        <div className="text-zinc-800/40"><KeyboardArrowUpIcon /></div>
+                        <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><KeyboardArrowUpIcon /></div>
                     ) : saving ? (
-                        <div className="w-1/5 m-[0.18rem] aspect-square border-3 border-l-transparent border-zinc-800/40 rounded-full animate-spin"/>
+                        <div className={`w-1/5 m-[0.18rem] aspect-square border-3 border-l-transparent ${status == "suspended" ? "border-white" : "border-zinc-800/40"} rounded-full animate-spin`}/>
                     ) : saved ? (
-                        <div className="text-zinc-800/40"><CheckOutlinedRoundedIcon/></div>
+                        <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><CheckOutlinedRoundedIcon/></div>
                     ) : (
-                        <div className="text-zinc-800/40"><KeyboardArrowDownIcon /></div>
+                        <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><KeyboardArrowDownIcon /></div>
                     )}
 
                 </button>

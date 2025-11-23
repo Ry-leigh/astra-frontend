@@ -66,7 +66,7 @@ export default function NotificationPage() {
     return(
         <Layout>
             <div className="flex flex-col h-full w-full gap-6">
-                <PageHeader>Notifications</PageHeader>
+                <PageHeader title="Notifications"/>
                 <div className="flex flex-col h-full overflow-y-auto bg-white w-full rounded-xl">
                     <NotificationList/>
                 </div>

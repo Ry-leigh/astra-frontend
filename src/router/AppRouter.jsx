@@ -9,6 +9,8 @@ import AnnouncementPage from "@/pages/AnnouncementPage";
 import ProgramsPage from "@/pages/ProgramsPage";
 import CalendarPage from "@/pages/CalendarPage";
 import UsersPage from "@/pages/UsersPage";
+import CreateUserPage from "@/pages/CreateUserPage";
+import EditUserPage from "@/pages/EditUserPage";
 import HelpPage from "@/pages/HelpPage";
 import SettingsPage from "@/pages/SettingsPage";
 import ProfilePage from "@/pages/ProfilePage";
@@ -38,6 +40,8 @@ export default function AppRouter() {
       <Route path="/class/:classCourseId/:date?" element={<PrivateRoute> <Layout><ClassPage /></Layout> </PrivateRoute>}/>
 
       <Route path="/users" element={<PrivateRoute> <UsersPage /> </PrivateRoute>}/>
+      <Route path="/users/create" element={<PrivateRoute> <CreateUserPage /> </PrivateRoute>}/>
+      <Route path="/users/:id" element={<PrivateRoute> <EditUserPage /> </PrivateRoute>}/>
       <Route path="/help" element={<PrivateRoute> <HelpPage /> </PrivateRoute>}/>
       <Route path="/settings" element={<PrivateRoute> <SettingsPage /> </PrivateRoute>}/>
       <Route path="/profile" element={<PrivateRoute> <ProfilePage /> </PrivateRoute>}/>

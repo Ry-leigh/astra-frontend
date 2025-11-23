@@ -57,7 +57,7 @@ export default function CalendarPage() {
         <PageHeader title="Calendar"/>
         <div className="flex flex-col w-full bg-white px-3 content-center rounded-lg text-nowrap">
           <div className="flex flex-col pb-4 px-2">
-            <Navigation activeTab={activeTab} handleTabChange={handleTabChange}>{activeTab === "events" ? <SecondaryButton><span className="text-base text-nowrap"><AddRoundedIcon/> Add Event</span></SecondaryButton> : ''}</Navigation>
+            <Navigation activeTab={activeTab} handleTabChange={handleTabChange}>{activeTab === "events" ? (role === 'Administrator') && (<SecondaryButton><span className="text-base text-nowrap"><AddRoundedIcon/> Add Event</span></SecondaryButton>) : ''}</Navigation>
             {activeTab === "events" ? <Calendar /> : <Scheduler />}
           </div>
         </div>

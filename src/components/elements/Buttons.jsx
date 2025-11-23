@@ -1,4 +1,4 @@
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
 
 export function PrimaryButton ({ children }) {
@@ -36,7 +36,7 @@ export function SecondaryButtonOutlined ({ children }) {
 export function EditButton ({ size = 'inherit' }) {
     return (
         <button className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
-            <EditOutlinedIcon fontSize={size}/>
+            <EditRoundedIcon fontSize={size}/>
         </button>
     )
 }

@@ -178,7 +178,7 @@ function WeekView({ events, currentDay }) {
     const weekStart = week[0];
     const weekEnd = week[6];
 
-    const SLOT_PX = 24; // tweak to taste (20, 24, 30, ...)
+    const SLOT_PX = 24;
     const slotPxStr = `${SLOT_PX}px`;
 
     const timeSlots = Array.from({ length: 48 }, (_, i) => {
@@ -321,7 +321,6 @@ function WeekView({ events, currentDay }) {
                 ))}
 
                 <div className="absolute inset-0 grid grid-cols-[60px_repeat(7,minmax(0,1fr))] pointer-events-none" style={{ gridAutoRows: slotPxStr }}>
-                    {console.log(laidOutTimed)}
                     {laidOutTimed.map(event => (
                         <div key={event.id}
                             className="bg-blue-100 w-full border-l-4 border-blue-500 text-xs p-1 rounded-sm pointer-events-auto cursor-pointer"

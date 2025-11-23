@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, Navigate, NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
 import HomeIcon from '@mui/icons-material/Home';
@@ -77,9 +77,11 @@ export default function Sidebar() {
 
   return (
     <aside className="bg-white h-screen w-65 transition-all duration-300 flex flex-col px-4 pb-8">
-      <div className="flex items-center px-2 py-5 gap-2">
-        <div className="bg-violet-600 h-full aspect-square rounded-full" />
-        <span className="font-bold text-xl my-1">ASTRA</span>
+      <div className="flex items-center px-2 py-5">
+        <Link className="flex w-fit h-full gap-4" to={"/"}>
+          <div className="bg-violet-600 h-full aspect-square rounded-full" />
+          <span className="font-bold text-xl my-1">ASTRA</span>
+        </Link>
       </div>
 
       <nav className="flex flex-col gap-1.5 h-full text-gray-700 text-sm">

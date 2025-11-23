@@ -1,10 +1,16 @@
 import api from "../api/axios"
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-import UserPreloader from "@/components/preloaders/UserPreloader";
-import ErrorRoute from "@/router/ErrorRoute";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
+
 import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/elements/PageHeader";
+import UserPreloader from "@/components/preloaders/UserPreloader";
+import ErrorRoute from "@/router/ErrorRoute";
 
 export default function UsersPage() {
     const [users, setUsers] = useState();
@@ -43,53 +49,65 @@ export default function UsersPage() {
     return(
         <Layout>
             <div className="flex flex-col w-full gap-4">
-                <PageHeader>Users</PageHeader>
+                <PageHeader title="Users"/>
 
-                <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs px-6 rounded-xl">
-                    <table className="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead className="sticky top-0 bg-white">
-                            <tr className="">
-                                <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Name</th>
-                                <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Email</th>
-                                <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Role</th>
-                                <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Sex</th>
-                                <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Address</th>
-                                <th className="px-4 py-3 pt-6 text-center font-semibold text-gray-700">Actions</th>
-                            </tr>
-                        </thead>
+                <div className="flex flex-col h-full bg-white w-full shadow-xs p-2 rounded-xl">
+                    <div className="flex justify-between m-4 mb-3 items-center">
+                        <div className="flex justify-between border border-gray-300 w-xs py-2 px-4 rounded-full">
+                            <span className="italic text-gray-700">Search name...</span>
+                            <SearchRoundedIcon />
+                        </div>
+                        <Link className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-base font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20" to={"/users/create"}>
+                            <AddRoundedIcon/> Create User
+                        </Link>
+                    </div>
 
-                        <tbody className="divide-y divide-gray-100 bg-white">
-                            {users.length > 0 ? (
-                                users.map((user) => (
-                                <tr key={user.id} className="hover:bg-zinc-50 transition">
-                                    <td className="px-4 py-3 text-gray-900">
-                                        {user.last_name}, {user.first_name}
-                                    </td>
-                                    <td className="px-4 py-3 text-gray-700">{user.email}</td>
-                                    <td className="px-4 py-3 text-gray-700">
-                                        {user.roles.map((role) => `${role.name}`).join(", ")}
-                                    </td>
-                                    <td className="px-4 py-3 text-gray-700">{user.sex == 'M' ? 'Male' : 'Female'}</td>
-                                    <td className="px-4 py-3 text-gray-700">{user.address}</td>
-                                    <td className="px-4 py-3 text-center space-x-3">
-                                        <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-gray-800 hover:bg-gray-200 transition" onClick={() => console.log("Edit", enrollee.student.user.id)}>
-                                            Edit
-                                        </button>
-                                        <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-red-600 hover:bg-red-100 transition" onClick={() => console.log("Delete", enrollee.student.user.id)}>
-                                            Edit
-                                        </button>
-                                    </td>
+                    <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs pb-4 px-6 rounded-xl gap-3 scrollbar-none">
+                        <table className="min-w-full divide-y divide-gray-200 text-sm">
+                            <thead className="sticky top-0 bg-white">
+                                <tr className="">
+                                    <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Name</th>
+                                    <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Email</th>
+                                    <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Role</th>
+                                    <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Sex</th>
+                                    <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Address</th>
+                                    <th className="px-4 py-3 pt-6 text-center font-semibold text-gray-700">Actions</th>
                                 </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="4" className="px-4 py-6 text-center text-gray-500 italic">
-                                        No Users found.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+
+                            <tbody className="divide-y divide-gray-100 bg-white">
+                                {users.length > 0 ? (
+                                    users.map((user) => (
+                                    <tr key={user.id} className="hover:bg-zinc-50 transition">
+                                        <td className="px-4 py-3 text-gray-900">
+                                            {user.last_name}, {user.first_name}
+                                        </td>
+                                        <td className="px-4 py-3 text-gray-700">{user.email}</td>
+                                        <td className="px-4 py-3 text-gray-700">
+                                            {user.roles.map((role) => `${role.name}`).join(", ")}
+                                        </td>
+                                        <td className="px-4 py-3 text-gray-700">{user.sex == 'M' ? 'Male' : 'Female'}</td>
+                                        <td className="px-4 py-3 text-gray-700">{user.address}</td>
+                                        <td className="px-4 py-3 text-center">
+                                            <Link to={`/users/${user.id}`} className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 text-xl hover:bg-gray-200 transition">
+                                                <EditRoundedIcon fontSize="inherit"/>
+                                            </Link>
+                                            <button className="inline-flex items-center justify-center rounded-md p-2 text-red-600 text-xl hover:bg-red-100 transition">
+                                                <IndeterminateCheckBoxOutlinedIcon fontSize="inherit"/>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="4" className="px-4 py-6 text-center text-gray-500 italic">
+                                            No Users found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </Layout>
