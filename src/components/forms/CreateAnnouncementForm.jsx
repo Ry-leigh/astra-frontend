@@ -197,7 +197,7 @@ export default function CreateAnnouncementForm({ onSuccess, onClose }) {
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={formLoading}
                     className="flex w-full h-fit justify-center py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-md font-medium hover:bg-blue-500"
                 >
                     {formLoading ? "Creating..." : "Create Announcement"}

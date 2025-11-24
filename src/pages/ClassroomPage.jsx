@@ -22,7 +22,6 @@ export default function ClassroomPage() {
     const [error, setError] = useState(null);
     const [academicYear, setAcademicYear] = useState("");
     const [academicYearOptions, setAcademicYearOptions] = useState([]);
-    const [academicYearOptionsWithCreate, setAcademicYearOptionsWithCreate] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -41,7 +40,7 @@ export default function ClassroomPage() {
                 }));
                 setAcademicYear(response.data.academic_years.at(-1)?.id)
                 setAcademicYearOptions(formattedAcademicYears);
-                setAcademicYearOptionsWithCreate(formattedAcademicYears.push({ value: -1, label: "Add A.Y." }))
+                formattedAcademicYears.push({ value: -1, label: "Add A.Y." })
             } else {
                 throw new Error("Failed to load classrooms");
             }
