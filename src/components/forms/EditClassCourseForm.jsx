@@ -10,7 +10,7 @@ function toOrdinal(n) {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-export default function AddCourseForm({ classroomId, academicYearId, semesterId, onSuccess, onClose }) {
+export default function EditClassCourseForm({ data, classroomId, academicYearId, semesterId, onSuccess, onClose }) {
     const [loading, setLoading] = useState(false);
     const [formLoading, setFormLoading] = useState(false)
     const [courseId, setCourseId] = useState(null)
@@ -21,12 +21,24 @@ export default function AddCourseForm({ classroomId, academicYearId, semesterId,
     const [semesterOptions, setSemesterOptions] = useState([])
     const [color, setColor] = useState("#3B82F6")
 
+    useEffect(() => {
+        if (data) {
+            setLoading(true)
+            setCourseId(data.course_id)
+            setInstructorId(data.instructor_id)
+            setSelectedSemester(data.semester_id)
+            setColor(data.color)
+            console.log(data)
+        }
+        setLoading(false)
+    }, [data]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setFormLoading(true);
 
         try {
-            const response = await api.post(`/courses/${classroomId}`, {
+            const response = await api.put(`/courses/${classroomId}/${data?.id}`, {
                 course_id: courseId,
                 instructor_id: instructorId,
                 academic_year_id: academicYearId,
@@ -38,8 +50,8 @@ export default function AddCourseForm({ classroomId, academicYearId, semesterId,
                 onClose();
             }
         } catch (err) {
-            console.error("Error adding course:", err,);
-            alert("Failed to add course.");
+            console.error("Error updating course:", err,);
+            alert("Failed to update course.");
         } finally {
             setFormLoading(false);
         }
@@ -121,7 +133,7 @@ export default function AddCourseForm({ classroomId, academicYearId, semesterId,
                 disabled={formLoading}
                 className="flex w-full h-fit justify-center py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-md font-medium hover:bg-blue-500"
             >
-                {formLoading ? "Adding..." : "Add Course"}
+                {formLoading ? "Updating..." : "Edit Course"}
             </button>
         </form>
     )

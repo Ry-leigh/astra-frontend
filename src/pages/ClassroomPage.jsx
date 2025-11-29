@@ -104,7 +104,7 @@ export default function ClassroomPage() {
                                     section={classroom.section || ""}
                                     color={program.color}
                                     academicYearId={classroom.academic_year_id}
-                                    onEdit={(classroom) => { setSelectedClassroom(classroom); setEditModalOpen(true); }}
+                                    onEdit={(classroom) => { setSelectedClassroom(classroom); setEditModalOpen(true); console.log(classroom) }}
                                     onDelete={(classroom) => { setSelectedClassroom(classroom); setDeleteModalOpen(true); }}
                                 />                    
                             );

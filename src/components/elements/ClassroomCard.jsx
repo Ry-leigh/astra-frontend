@@ -20,12 +20,12 @@ export default function ClassroomCard({ classroomId, programName, yearLevel, sec
 
     return (
         <div className="relative">
-            <Link className="flex-col h-60 rounded-xl overflow-hidden shadow-sm transition-all hover:scale-99 cursor-pointer block" to={`/courses/${classroomId}`}>
+            <Link className="flex flex-col h-60 rounded-xl overflow-hidden shadow-sm transition-all hover:scale-99 cursor-pointer" to={`/courses/${classroomId}`}>
                 <div className="flex items-center h-13/21 p-6" style={{ backgroundColor: `#${color}` }}>
                     <h1 className="font-bold text-8xl text-zinc-50">{yearLevel}{section}</h1>
                 </div>
                 <div className="flex bg-white justify-between h-8/21 pt-4 pb-6 px-4">
-                    <div className="flex-col w-9/10">
+                    <div className="flex flex-col w-9/10">
                         <h2 className="font-semibold text-xl">{programName} {yearLevel}{section}</h2>
                     </div>
                     <button

@@ -11,6 +11,8 @@ import { Dropdown } from "@/components/elements/Dropdown";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import Modal from "@/components/elements/Modal";
 import AddCourseForm from "@/components/forms/AddCourseForm";
+import EditClassCourseForm from "@/components/forms/EditClassCourseForm";
+import DeleteClassCourseModal from "@/components/modals/DeleteClassCourseModal";
 
 function toOrdinal(n) {
   const s = ["th", "st", "nd", "rd"];
@@ -29,7 +31,10 @@ export default function CoursePage() {
 
   const [semesterId, setSemesterId] = useState(null);
   const [semesterOptions, setSemesterOptions] = useState([])
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [addCourseModalOpen, setAddCourseModalOpen] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState([])
 
   const fetchCourses = async () => {
     try {
@@ -106,6 +111,7 @@ export default function CoursePage() {
           <div className="flex min-h-9/11 h-full overflow-y-auto scrollbar-none rounded-lg">
             <div className="grid h-fit w-full grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
               {courses.map((item) => {
+                const c = item
                 const course = item.course;
                 const instructor = item.instructor?.user;
                 const courseName = course?.name || "Untitled Course";
@@ -122,7 +128,9 @@ export default function CoursePage() {
                     courseName={courseName}
                     courseInstructor={instructorName}
                     semesterId={item.semester_id}
-                    color={item?.color || 'E4E4E4'}
+                    color={item?.color || '#E4E4E4'}
+                    onEdit={(item) => { setSelectedCourse(c); setEditModalOpen(true); console.log(c) }}
+                    onDelete={(item) => { setSelectedCourse(c); setDeleteModalOpen(true) }}
                   />
                 );
                 }
@@ -140,6 +148,23 @@ export default function CoursePage() {
           onClose={() => setAddCourseModalOpen(false)} 
         />
       </Modal>
+      <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)} title={`Edit Course`} >
+        <EditClassCourseForm
+          data={selectedCourse}
+          classroomId={id}
+          academicYearId={classroom.academic_year_id}
+          semesterId={semesterId}
+          onSuccess={fetchCourses}
+          onClose={() => setEditModalOpen(false)} 
+        />
+      </Modal>
+      <DeleteClassCourseModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        data={selectedCourse}
+        classroomId={id}
+        onSuccess={fetchCourses}
+      />
     </>
   );
 }

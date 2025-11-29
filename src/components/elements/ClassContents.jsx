@@ -320,6 +320,13 @@ export function ClassAttendance({ role = '', date = ''}) {
         }
     }
 
+    const handleUpdateTimeIn = async ({ classCourseId, id, timeIn }) => {
+        setLoading(true)
+        const response = await api.put(`/class/${classCourseId}/attendance/${id}`, {
+            timeIn
+        })
+    }
+
     if (error) return <ErrorRoute code={error} />;
 
     if (loading) return (
@@ -345,10 +352,12 @@ export function ClassAttendance({ role = '', date = ''}) {
             
             <div className="flex gap-4 px-2 text-base">
                 <div className="flex gap-2 items-center">
-                    <p className="font-medium">Time in:</p><p className="font-light">{session?.time_in || '--'}</p><EditButton/>
+                    <p className="font-medium">Time in:</p>
+                    <p className="font-light">{session?.time_in || '--'}</p><EditButton/>
                 </div>
                 <div className="flex gap-2 items-center">
-                    <p className="font-medium">Time out:</p><p className="font-light">{session?.time_out || '--'}</p><EditButton/>
+                    <p className="font-medium">Time out:</p>
+                    <p className="font-light">{session?.time_out || '--'}</p><EditButton/>
                 </div>
             </div>
 
