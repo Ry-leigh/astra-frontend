@@ -64,3 +64,15 @@ export default function TextInput({
     </div>
   );
 }
+
+// usage:
+
+//   const [email, setEmail] = useState("");
+
+  // <div className="space-y-6 w-80">
+  //   <TextInput
+  //     label="Email"
+  //     value={email}
+  //     onChange={(e) => setEmail(e.target.value)}
+  //   />
+  //  </div>

@@ -6,6 +6,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
+import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 
 import PageHeader from "@/components/elements/PageHeader";
 import UserPreloader from "@/components/preloaders/UserPreloader";
@@ -57,7 +58,7 @@ export default function UsersPage() {
                             <SearchRoundedIcon />
                         </div>
                         <Link className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-base font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20" to={"/users/create"}>
-                            <AddRoundedIcon/> Create User
+                            <PersonAddRoundedIcon/> Create User
                         </Link>
                     </div>
 

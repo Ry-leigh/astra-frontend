@@ -42,8 +42,8 @@ function HeaderDropdown({
       {/* Display Box */}
       <div
         onClick={() => setOpen((o) => !o)}
-        className={`h-full rounded-lg px-4 py-3 cursor-pointer bg-violet-50
-          text-gray-800 select-none flex justify-between items-center
+        className={`h-full w-fit rounded-lg px-4 py-3 cursor-pointer bg-violet-50
+          text-gray-800 select-none flex justify-between items-center gap-2
           transition-all duration-150
           hover:bg-violet-100
           ${open ? "bg-violet-100" : ""}
@@ -130,7 +130,7 @@ export default function Layout({ children }) {
 
           <div className="flex items-center gap-8">
             <NotificationPanel/>
-            <div className="flex w-28">
+            <div className="flex w-fit">
               <HeaderDropdown
               label={`${user.first_name || "User"}`}
               value={user?.first_name || "User"}

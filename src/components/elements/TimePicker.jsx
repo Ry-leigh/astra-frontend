@@ -46,3 +46,24 @@ export default function TimePicker({
     </div>
   );
 }
+
+// usage
+
+// import { useState } from "react";
+// import TimePicker from "@/components/elements/TimePicker";
+
+// export default function Demo() {
+//   const [startTime, setStartTime] = useState("");
+
+//   return (
+//     <div className="w-80 space-y-6">
+//       <TimePicker
+//         label="Start Time"
+//         name="start_time"
+//         value={startTime}
+//         onChange={setStartTime}
+//         step="60"  // 1-minute increments
+//       />
+//     </div>
+//   );
+// }

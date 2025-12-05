@@ -17,7 +17,14 @@ import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRig
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CheckOutlinedRoundedIcon from '@mui/icons-material/CheckOutlined';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { PrimaryButtonOutlined, EditButton, DeleteButton } from '@/components/elements/Buttons';
+import TimePicker from "./TimePicker";
+import Modal from "./Modal";
+import EditClassTaskForm from "../forms/EditClassTaskForm";
+import DeleteClassTaskModal from "../modals/DeleteClassTaskModal";
 
 function UnenrollModal({ open, setUnenrollModalOpen, enrollmentId, setEnrolleeList }) {
     const [loading, setLoading] = useState(false);
@@ -62,7 +69,7 @@ function UnenrollModal({ open, setUnenrollModalOpen, enrollmentId, setEnrolleeLi
     );
 }
 
-export function ClassIndex({ classCourseId, role }) {
+export function ClassIndex({ classCourseId, role, reloadKey }) {
     const [unenrollModalOpen, setUnenrollModalOpen] = useState(false);
     const [selectedEnrollmentId, setSelectedEnrollmentId] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -86,7 +93,7 @@ export function ClassIndex({ classCourseId, role }) {
 
     useEffect(() => {
         fetchEnrollees();
-    }, [classCourseId]);
+    }, [classCourseId, reloadKey]);
 
         if (loading) return (
             <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl scrollbar-none">
@@ -148,6 +155,10 @@ export function ClassAttendance({ role = '', date = ''}) {
     const [attendanceRecords, setAttendanceRecords] =useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [editTimeIn, setEditTimeIn] = useState(false);
+    const [timeIn, setTimeIn] = useState(null);
+    const [editTimeOut, setEditTimeOut] = useState(false);
+    const [timeOut, setTimeOut] = useState(null);
 
     const handleRecordAttendance = async ({ classCourseId, id, status, time_in = null, remarks = null}) => {
         try {
@@ -232,7 +243,7 @@ export function ClassAttendance({ role = '', date = ''}) {
 
         return (
             <div className="relative w-1/3">
-                <button ref={buttonRef} onClick={() => setOpen(!open)} className={`flex items-center py-1 px-2 justify-between gap-1 w-full border border-gray-200 rounded-md ${bg}`}>
+                <button disabled={role == "Student"} ref={buttonRef} onClick={() => setOpen(!open)} className={`flex items-center py-1 px-2 justify-between gap-1 w-full border border-gray-200 rounded-md ${bg}`}>
                     <span className="capitalize">{status}</span>
 
                     {open ? (
@@ -241,7 +252,7 @@ export function ClassAttendance({ role = '', date = ''}) {
                         <div className={`w-1/5 m-[0.18rem] aspect-square border-3 border-l-transparent ${status == "suspended" ? "border-white" : "border-zinc-800/40"} rounded-full animate-spin`}/>
                     ) : saved ? (
                         <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><CheckOutlinedRoundedIcon/></div>
-                    ) : (
+                    ) : role == "Student" ? null : (
                         <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><KeyboardArrowDownIcon /></div>
                     )}
 
@@ -320,12 +331,21 @@ export function ClassAttendance({ role = '', date = ''}) {
         }
     }
 
-    const handleUpdateTimeIn = async ({ classCourseId, id, timeIn }) => {
-        setLoading(true)
-        const response = await api.put(`/class/${classCourseId}/attendance/${id}`, {
-            timeIn
-        })
-    }
+    const handleUpdateTimeIn = async () => {
+        await api.put(`/class/${classCourseId}/attendance/${session?.id}`, {
+            time_in: timeIn,
+        });
+        setEditTimeIn(false);
+        fetchAttendance();
+    };
+
+    const handleUpdateTimeOut = async () => {
+        await api.put(`/class/${classCourseId}/attendance/${session?.id}`, {
+            time_out: timeOut,
+        });
+        setEditTimeOut(false);
+        fetchAttendance();
+    };
 
     if (error) return <ErrorRoute code={error} />;
 
@@ -348,18 +368,85 @@ export function ClassAttendance({ role = '', date = ''}) {
                     </button>
                     <p className="text-base">{session?.class_schedule?.day_of_week || dayjs(session?.session_date).format("dddd") || '--'} | {session?.class_schedule?.start_time? dayjs(session.class_schedule.start_time, "HH:mm:ss").format("h:mm") : session?.calendar_schedule?.start_time? dayjs(session.calendar_schedule.start_time, "HH:mm:ss").format("h:mm") : '--'} – {session?.class_schedule?.end_time ? dayjs(session.class_schedule.end_time, "HH:mm:ss").format("h:mm") : session?.calendar_schedule?.end_time ? dayjs(session.calendar_schedule.end_time, "HH:mm:ss").format("h:mm") : '--'}</p>
                 </div>
+                <div className="flex gap-4 px-2 text-base">
+                {((role != 'Student') && (
+                    <div className="flex gap-3 items-center">
+                        <p className="font-medium">Time in:</p>
+                        {editTimeIn ? (
+                        <div className="flex items-center gap-2">
+                            <input
+                            type="time"
+                            value={session?.time_in ? session.time_in : dayjs().format("hh:mm")}
+                            onChange={(e) => setTimeIn(e.target.value)}
+                            className="border border-gray-300 rounded-lg p-1"
+                            />
+
+                            <button
+                            onClick={handleUpdateTimeIn}
+                            className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                            >
+                            <CheckRoundedIcon fontSize="inherit" />
+                            </button>
+
+                            <button
+                            onClick={() => setEditTimeIn(false)}
+                            className="inline-flex items-center justify-center rounded-md p-2 text-red-600 bg-red-50 hover:bg-red-100 transition"
+                            >
+                            <CloseRoundedIcon fontSize="inherit" />
+                            </button>
+                        </div>
+                        ) : (
+                        <div className="flex items-center gap-2">
+                            <div className="font-light ">{session?.time_in ? dayjs(session?.time_in, "HH:mm").format("hh:mm A") : "--:--"}</div>
+                            <button
+                            onClick={() => setEditTimeIn(true)}
+                            className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
+                            >
+                            <EditRoundedIcon fontSize="inherit" />
+                            </button>
+                        </div>
+                        )}
+                        <p className="font-medium">Time out:</p>
+                        {editTimeOut ? (
+                            <div className="flex items-center gap-2">
+                                <input
+                                type="time"
+                                value={session?.time_out ? session.time_out : dayjs().format("hh:mm")}
+                                onChange={(e) => setTimeOut(e.target.value)}
+                                className="border border-gray-300 rounded-lg p-1"
+                                />
+
+                                <button
+                                onClick={handleUpdateTimeOut}
+                                className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                >
+                                <CheckRoundedIcon fontSize="inherit" />
+                                </button>
+
+                                <button
+                                onClick={() => setEditTimeOut(false)}
+                                className="inline-flex items-center justify-center rounded-md p-2 text-red-600 bg-red-50 hover:bg-red-100 transition"
+                                >
+                                <CloseRoundedIcon fontSize="inherit" />
+                                </button>
+                            </div>
+                            ) : (
+                            <div className="flex items-center gap-2">
+                                <div className="font-light">{session?.time_out ? dayjs(session?.time_out, "HH:mm").format("hh:mm A") : "--:--"}</div>
+                                <button
+                                onClick={() => setEditTimeOut(true)}
+                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
+                                >
+                                <EditRoundedIcon fontSize="inherit" />
+                                </button>
+                            </div>
+                            )}
+                    </div>
+                ))}
+            </div>
             </div>
             
-            <div className="flex gap-4 px-2 text-base">
-                <div className="flex gap-2 items-center">
-                    <p className="font-medium">Time in:</p>
-                    <p className="font-light">{session?.time_in || '--'}</p><EditButton/>
-                </div>
-                <div className="flex gap-2 items-center">
-                    <p className="font-medium">Time out:</p>
-                    <p className="font-light">{session?.time_out || '--'}</p><EditButton/>
-                </div>
-            </div>
+            
 
             {/* <div className="flex flex-nowrap mt-4 px-2 items-center gap-2 text-sm">Mark selected as: <PrimaryButtonOutlined>Present</PrimaryButtonOutlined></div> */}
             
@@ -380,7 +467,9 @@ export function ClassAttendance({ role = '', date = ''}) {
                                 <td className="px-4 py-3 text-gray-900">
                                     {enrollee.student.user.last_name}, {enrollee.student.user.first_name}
                                 </td>
-                                <td className="px-4 py-3 text-gray-700"><AttendanceOptions classId={classCourseId} attendanceId={enrollee.id} status={enrollee?.status} setAttendanceRecords={setAttendanceRecords}/></td>
+                                <td className="px-4 py-3 text-gray-700">
+                                    <AttendanceOptions classId={classCourseId} attendanceId={enrollee.id} status={enrollee?.status} setAttendanceRecords={setAttendanceRecords}/>
+                                </td>
                                 <td className="px-4 py-3 text-gray-700">{enrollee.remarks || "..."}</td>
                             </tr>
                             ))
@@ -398,15 +487,20 @@ export function ClassAttendance({ role = '', date = ''}) {
     )
 }
 
-export function ClassTask({ role = ''}) {
+export function ClassTask({ role = '', reloadKey }) {
     const { classCourseId } = useParams();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [tasks, setTasks] = useState({});
 
+    const [editTaskModal, setEditTaskModalOpen] = useState(false);
+    const [deleteTaskModal, setDeleteTaskModalOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState();
+
     const fetchTasks = async () => {
         try {
             const response = await api.get(`/class/${classCourseId}/tasks`);
+            console.log(response.data)
             if(response.data.success){
                 setTasks(response.data.tasks);
             } else {
@@ -420,9 +514,21 @@ export function ClassTask({ role = ''}) {
         }
     };
 
+    const handleMarkFinish = async (id) => {
+        await api.post(`/class/${classCourseId}/tasks/status/${id}`);
+        fetchTasks();
+    };
+
+    const handleMarkUnfinish = async (id) => {
+        console.log(classCourseId, id)
+        await api.delete(`/class/${classCourseId}/tasks/status/${id}`);
+        fetchTasks();
+    };
+
+
     useEffect(() => {
         fetchTasks();
-    },[classCourseId])
+    },[classCourseId, reloadKey])
 
     if (loading) return (
         <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl gap-2">
@@ -434,91 +540,239 @@ export function ClassTask({ role = ''}) {
 
     return (
         <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs px-6 rounded-xl">
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
+            <table className="min-w-full table-fixed divide-y divide-gray-200 text-sm">
                 <thead className="sticky top-0 bg-white">
-                    <tr className="">
-                        <th className="py-3 pt-6 text-left font-semibold text-gray-700"></th>
-                        <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Title</th>
-                        <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Description</th>
-                        <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Due</th>
-                        <th className="px-4 py-3 pt-6 text-left font-semibold text-gray-700">Category</th>
-                        {(role === 'Administrator' || role === 'Instructor') && (
-                            <th className="px-4 py-3 pt-6 text-center font-semibold text-gray-700">Actions</th>
-                        )}
+                    <tr>
+                        <th className="w-1/30 py-3 pt-6"></th>
+                        <th className="w-6/30 px-4 py-3 pt-6 text-left font-semibold text-gray-700">Title</th>
+                        <th className="w-11/30 px-4 py-3 pt-6 text-left font-semibold text-gray-700">Description</th>
+                        <th className="w-5/30 px-4 py-3 pt-6 text-left font-semibold text-gray-700">Due</th>
+                        <th className="w-2/30 px-4 py-3 pt-6 text-left font-semibold text-gray-700">Category</th>
+                        <th className="w-5/30 px-4 py-3 pt-6 text-center font-semibold text-gray-700">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody className="divide-y divide-gray-100 bg-white">
                     {tasks.overdue?.map((task) => (
-                    <tr key={task.id} className="hover:bg-zinc-50 transition">
-                        <td className="px-4 py-3 text-gray-900">
-                            <div className="h-10 w-2 bg-blue-500"/>
-                        </td>
-                        <td className="px-4 py-3 text-gray-700">{task.title}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.description}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.due_date? `${task.due_date} | ${task.due_time}` : '--'}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.category}</td>
-                        {(role === 'Administrator' || role === 'Instructor') && (
-                            <td className="px-4 py-3 text-center space-x-3">
-                                <EditButton size="small" />
-                                <DeleteButton size="small" />
+                        <tr key={task.id} className="hover:bg-zinc-50 transition">
+                            <td className="px-4 py-3">
+                                <div className="h-10 w-2 bg-red-500 rounded"/>
                             </td>
-                        )}
-                    </tr>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.title}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.description}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700">
+                                {task.due_date ? `${task.due_date}${task.due_time ? ` | ${task.due_time}` : ''}` : '--'}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.category}
+                            </td>
+                            {(role === 'Officer' || role === 'Student') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => handleMarkFinish(task.id)}
+                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                    >
+                                        Mark Finished
+                                    </button>
+                                </td>
+                            )}
+                        </tr>
                     ))}
-                    {tasks.today.map((task) => (
-                    <tr key={task.id} className="hover:bg-zinc-50 transition">
-                        <td className="py-4 text-gray-900">
-                            <div className="h-10 w-2 bg-blue-500 rounded-full"/>
-                        </td>
-                        <td className="px-4 py-3 text-gray-700">{task.title}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.description}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.due_date? `${task.due_date} ${task.due_time? `| ${task.due_time}` : ''}` : '--'}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.category}</td>
-                        {(role === 'Administrator' || role === 'Instructor') && (
-                            <td className="px-4 py-3 text-center space-x-3">
-                                <EditButton size="small" />
-                                <DeleteButton size="small" />
+                    {tasks.today?.map((task) => (
+                        <tr key={task.id} className="hover:bg-zinc-50 transition">
+                            <td className="px-4 py-3">
+                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-orange-400'}`}/>
                             </td>
-                        )}
-                    </tr>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.title}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.description}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700">
+                                {task.due_date ? `${task.due_date}${task.due_time ? ` | ${task.due_time}` : ''}` : '--'}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.category}
+                            </td>
+                            {(role === 'Officer' || role === 'Student') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => handleMarkFinish(task.id)}
+                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                    >
+                                        Mark Finished
+                                    </button>
+                                </td>
+                            )}
+
+                            {(role === 'Administrator' || role === 'Instructor') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small"/>
+                                    </button>
+                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    </button>
+                                </td>
+                            )}
+                        </tr>
                     ))}
-                    {tasks.upcoming.map((task) => (
-                    <tr key={task.id} className="hover:bg-zinc-50 transition">
-                        <td className="px-4 py-3 text-gray-900">
-                            <div className="h-10 w-2 bg-blue-500"/>
-                        </td>
-                        <td className="px-4 py-3 text-gray-700">{task.title}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.description}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.due_date? `${task.due_date} | ${task.due_time}` : '--'}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.category}</td>
-                        {(role === 'Administrator' || role === 'Instructor') && (
-                            <td className="px-4 py-3 text-center space-x-3">
-                                <EditButton size="small" />
-                                <DeleteButton size="small" />
+                    {tasks.upcoming?.map((task) => (
+                        <tr key={task.id} className="hover:bg-zinc-50 transition">
+                            <td className="px-4 py-3">
+                                <div className="h-10 w-2 bg-blue-500 rounded"/>
                             </td>
-                        )}
-                    </tr>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.title}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.description}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700">
+                                {task.due_date ? `${task.due_date}${task.due_time ? ` | ${task.due_time}` : ''}` : '--'}
+
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.category}
+                            </td>
+                            {(role === 'Officer' || role === 'Student') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => handleMarkFinish(task.id)}
+                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                    >
+                                        Mark Finished
+                                    </button>
+                                </td>
+                            )}
+
+                            {(role === 'Administrator' || role === 'Instructor') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small"/>
+                                    </button>
+                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    </button>
+                                </td>
+                            )}
+                        </tr>
                     ))}
-                    {tasks.finished.map((task) => (
-                    <tr key={task.id} className="hover:bg-zinc-50 transition">
-                        <td className="px-4 py-3 text-gray-900">
-                            <div className="h-10 w-2 bg-blue-500 rounded-full"/>
-                        </td>
-                        <td className="px-4 py-3 text-gray-700">{task.title}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.description}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.due_date? `${task.due_date} | ${task.due_time}` : '--'}</td>
-                        <td className="px-4 py-3 text-gray-700">{task.category}</td>
-                        {(role === 'Administrator' || role === 'Instructor') && (
-                            <td className="px-4 py-3 text-center space-x-3">
-                                <EditButton size="small" />
-                                <DeleteButton size="small" />
+                    {tasks.finished?.map((task) => (
+                        <tr key={task.id} className="hover:bg-zinc-50 transition">
+                            <td className="px-4 py-3">
+                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-green-400'}`}/>
                             </td>
-                        )}
-                    </tr>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.title}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.description}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700">
+                                {task.due_date ? `${task.due_date}${task.due_time ? ` | ${task.due_time}` : ''}` : '--'}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.category}
+                            </td>
+                            {(role === 'Officer' || role === 'Student') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => handleMarkUnfinish(task.id)}
+                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-red-600 bg-red-50 hover:bg-red-100 transition"
+                                    >
+                                        Mark Unfinished
+                                    </button>
+                                </td>
+                            )}
+                            {(role === 'Administrator' || role === 'Instructor') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small"/>
+                                    </button>
+                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    </button>
+                                </td>
+                            )}                                                            
+                        </tr>
+                    ))}
+                    {tasks.undated?.map((task) => (
+                        <tr key={task.id} className="hover:bg-zinc-50 transition">
+                            <td className="px-4 py-3">
+                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-green-400'}`}/>
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.title}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.description}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700">
+                                {task.due_date ? `${task.due_date}${task.due_time ? ` | ${task.due_time}` : ''}` : '--'}
+                            </td>
+
+                            <td className="px-4 py-3 text-gray-700 truncate">
+                                {task.category}
+                            </td>
+
+                            {(role === 'Administrator' || role === 'Instructor') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small"/>
+                                    </button>
+                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    </button>
+                                </td>
+                            )}
+                        </tr>
                     ))}
                 </tbody>
             </table>
+            <Modal open={editTaskModal} onClose={() => setEditTaskModalOpen(false)} title={`Edit ${selectedTask}`}>
+                <EditClassTaskForm
+                    classCourseId={classCourseId}
+                    task={selectedTask}
+                    onSuccess={fetchTasks}
+                    onClose={() => setEditTaskModalOpen(false)}
+                />
+            </Modal>
+            <DeleteClassTaskModal
+                open={deleteTaskModal}
+                onClose={() => setDeleteTaskModalOpen(false)}
+                classCourseId={classCourseId}
+                task={selectedTask}
+                onSuccess={fetchTasks}
+            />
         </div>
     )
 }

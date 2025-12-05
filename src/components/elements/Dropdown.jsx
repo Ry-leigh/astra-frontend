@@ -212,3 +212,15 @@ export function Dropdown({
   );
 }
 
+// usage:
+
+// <FloatingLabelDropdown
+//   label="User Role"
+//   value={role}
+//   onChange={setRole}
+//   options={[
+//     { value: "admin", label: "Admin" },
+//     { value: "teacher", label: "Teacher" },
+//     { value: "student", label: "Student" },
+//   ]}
+// />

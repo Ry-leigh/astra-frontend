@@ -3,10 +3,12 @@ import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export default function CourseCard({ classCourseId, courseName, courseInstructor, semesterId, color, onEdit, onDelete }) {
     const [openMenu, setOpenMenu] = useState(false);
     const menuRef = useRef(null);
+    const { user } = useAuth();
 
     useEffect(() => {
         function handleClickOutside(e) {
@@ -35,7 +37,7 @@ export default function CourseCard({ classCourseId, courseName, courseInstructor
                         }}
                         className="flex text-gray-600 hover:text-black cursor-pointer"
                     >
-                        <MoreVertRoundedIcon />
+                        {((user.roles[0].name === 'Administrator') && (<MoreVertRoundedIcon />))}
                     </button>
                 </div>
             </Link>

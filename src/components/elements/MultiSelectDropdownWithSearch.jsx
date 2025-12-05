@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-export default function MultiSelectDropdown({
+export default function MultiSelectDropdownWithSearch({
   label = "Select options",
   value = [],
   onChange,
@@ -93,7 +93,7 @@ export default function MultiSelectDropdown({
 
       {/* Dropdown Menu */}
       {open && (
-        <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 max-h-64 overflow-auto animate-dropdown">
+        <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 max-h-64 overflow-auto animate-dropdown scrollbar-none">
           
           {/* Search Input */}
           <div className="p-2 border-b border-gray-200">
@@ -155,7 +155,7 @@ export default function MultiSelectDropdown({
 
 // const [selectedRoles, setSelectedRoles] = useState([]);
 
-// <MultiSelectDropdown
+// <MultiSelectDropdownWithSearch
 //   label="Roles"
 //   value={selectedRoles}
 //   onChange={setSelectedRoles}

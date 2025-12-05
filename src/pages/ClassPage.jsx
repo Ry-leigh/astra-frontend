@@ -9,6 +9,9 @@ import ErrorRoute from "@/router/ErrorRoute";
 import ClassPreloader from "@/components/preloaders/ClassPreloader";
 import { PrimaryButton, EditButton } from "@/components/elements/Buttons";
 import { ClassIndex, ClassAttendance, ClassTask, ClassAnnouncement } from "@/components/elements/ClassContents";
+import Modal from "@/components/elements/Modal";
+import EnrollStudentForm from "@/components/forms/EnrollStudentForm";
+import CreateClassTaskForm from "@/components/forms/CreateClassTaskForm";
 
 function Header({ course = { name: '' }, instructor = { first_name: '', last_name: '', sex: '' }, role = '', activeTab = 'students', handleTabChange = () => {}, children }) {
     const neutral = "flex gap-3 items-center mx-2 py-4 px-6 pt-7";
@@ -57,9 +60,9 @@ function Header({ course = { name: '' }, instructor = { first_name: '', last_nam
     );
 }
 
-function IndexTab({ classCourseId, role }) { return <ClassIndex classCourseId={classCourseId} role={role} /> }
+function IndexTab({ classCourseId, role, reloadKey }) { return <ClassIndex classCourseId={classCourseId} role={role} reloadKey={reloadKey}/> }
 function AttendanceTab({ role = '', date = '' }) { return <ClassAttendance role={role} date={date} /> }
-function TaskTab({ role = '' }) { return <ClassTask role={role} /> }
+function TaskTab({ role = '', reloadKey }) { return <ClassTask role={role} reloadKey={reloadKey}/> }
 function AnnouncementTab({ role = '' }) { return <ClassAnnouncement role={role}/> }
 
 export default function ClassPage() {
@@ -70,6 +73,12 @@ export default function ClassPage() {
     const [loading, setLoading] = useState(true);
     const [role, setRole] = useState('');
     const { user } = useAuth();
+
+    const [enrollModalOpen, setEnrollModalOpen] = useState(false);
+    const [reloadStudentsKey, setReloadStudentsKey] = useState(0);
+
+    const [createTaskModalOpen, setCreateTaskModalOpen] = useState(false);
+    const [reloadTasksKey, setReloadTasksKey] = useState(0);
 
     const fetchClass = async () => {
         try {
@@ -110,28 +119,54 @@ export default function ClassPage() {
     );
 
     return (
-
-            <div className="flex flex-col w-full gap-4 items-end">
-                <Header course={course} instructor={instructor} role={role} activeTab={activeTab} handleTabChange={handleTabChange}>
-                    {((role === 'Administrator' || role === 'Instructor') && activeTab == 'students') && (
-                        <PrimaryButton><AddRoundedIcon/><span className="text-base text-nowrap">Enroll Student</span></PrimaryButton>
-                    )}
-                    {(activeTab == 'attendance') && (<PrimaryButton><span className="text-base text-nowrap">View Class Sessions</span></PrimaryButton>)}
-                    {((role === 'Administrator' || role === 'Instructor') && activeTab == 'tasks') && (<PrimaryButton><AddRoundedIcon/><span className="text-base text-nowrap">Task</span></PrimaryButton>)}
-                    {((role === 'Administrator' || role === 'Instructor') && activeTab == 'announcements') && (<PrimaryButton><AddRoundedIcon/><span className="text-base text-nowrap">Announcement</span></PrimaryButton>)}
-                </Header>
-                {
-                    activeTab === "students" ? (
-                        <IndexTab classCourseId={classCourseId} role={role} />
-                    ) : activeTab === "attendance" ? (
-                        <AttendanceTab role={role} date={date || ''}/>
-                    ) : activeTab === "tasks" ? (
-                        <TaskTab role={role} />
-                    ) : activeTab === "announcements" ? (
-                        <AnnouncementTab role={role}/>
-                    ) : null
-                }
-            </div>
-
+        <div className="flex flex-col w-full gap-4 items-end">
+            <Header course={course} instructor={instructor} role={role} activeTab={activeTab} handleTabChange={handleTabChange}>
+                {((role === 'Administrator' || role === 'Instructor') && activeTab == 'students') && (
+                    <button onClick={() => {setEnrollModalOpen(true)}} className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-sm font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20">
+                        <AddRoundedIcon/><span className="text-base text-nowrap">Enroll Student</span>
+                    </button>
+                )}
+                {(activeTab == 'attendance') && (
+                    <button className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-sm font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20">
+                        <span className="text-base text-nowrap">View Class Sessions</span>
+                    </button>
+                )}
+                {((role === 'Administrator' || role === 'Instructor') && activeTab == 'tasks') && (
+                    <button onClick={() => {setCreateTaskModalOpen(true)}} className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-sm font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20">
+                        <AddRoundedIcon/><span className="text-base text-nowrap">Task</span>
+                    </button>
+                )}
+                {((role === 'Administrator' || role === 'Instructor') && activeTab == 'announcements') && (
+                    <button className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-sm font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20">
+                        <AddRoundedIcon/><span className="text-base text-nowrap">Announcement</span>
+                    </button>
+                )}
+            </Header>
+            {
+                activeTab === "students" ? (
+                    <IndexTab classCourseId={classCourseId} role={role} reloadKey={reloadStudentsKey}/>
+                ) : activeTab === "attendance" ? (
+                    <AttendanceTab role={role} date={date || ''}/>
+                ) : activeTab === "tasks" ? (
+                    <TaskTab role={role} reloadKey={reloadTasksKey} />
+                ) : activeTab === "announcements" ? (
+                    <AnnouncementTab role={role}/>
+                ) : null
+            }
+            <Modal open={enrollModalOpen} onClose={() => {setEnrollModalOpen(false)}} title={`Enroll Student in ${course.name}`}>
+                <EnrollStudentForm 
+                    classCourseId={classCourseId}
+                    onSuccess={() => setReloadStudentsKey(prev => prev + 1)}
+                    onClose={() => setEnrollModalOpen(false)}
+                />
+            </Modal>
+            <Modal open={createTaskModalOpen} onClose={() => {setCreateTaskModalOpen(false)}} title="Add Task"> 
+                <CreateClassTaskForm 
+                    classCourseId={classCourseId}
+                    onSuccess={() => setReloadTasksKey(prev => prev + 1)}
+                    onClose={() => setCreateTaskModalOpen(false)}
+                />
+            </Modal>
+        </div>
     );
 }
