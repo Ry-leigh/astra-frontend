@@ -99,17 +99,20 @@ export default function Scheduler() {
           {laidOutTimed.map((event) => (
             <div
               key={event.id}
-              className="bg-blue-100 border-l-4 border-blue-500 text-xs p-1 rounded-sm pointer-events-auto cursor-pointer overflow-hidden min-w-0"
+              className="flexx flex-col bg-blue-100 m-0.5 text-xs p-2 rounded-sm pointer-events-auto cursor-pointer overflow-y-scroll scrollbar-none overflow-x-hidden min-w-0"
               style={{
+                backgroundColor: `${event.class_course.color}`,
                 gridColumn: event.dayIndex + 2,
                 gridRowStart: event.startSlot + 1,
                 gridRowEnd: `span ${event.span}`
               }}
             >
-              <p className="truncate">{event.title}</p>
-              <p className="truncate">
+              <div className="text-wrap mb-1 font-medium">{event.class_course.course.name}</div>
+              <div className="text-wrap mb-1 font-base">{event.class_course.instructor.user.sex == 'M' ? 'Mr.' : 'Ms.'} {event.class_course.instructor.user.first_name} {event.class_course.instructor.user.last_name}</div>
+              {console.log(event)}
+              <div className="truncate">
                 {event.start_time} – {event.end_time}
-              </p>
+              </div>
             </div>
           ))}
         </div>
