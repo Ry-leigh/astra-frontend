@@ -24,15 +24,9 @@ function Header({ course = { name: '' }, instructor = { first_name: '', last_nam
                 <div className="flex flex-col gap-2 px-2">
                     <div className="flex items-center gap-2">
                         <h1 className="flex font-semibold text-2xl">{course.name}</h1>
-                        {(role === 'Administrator') && (
-                            <EditButton size="small"/>
-                        )}
                     </div>
                     <div className="flex items-center gap-2">
                         <p>{instructor.sex == 'M' ? 'Mr. ' : (instructor.sex == 'F' ? 'Ms. ' : '')} {instructor.first_name} {instructor.last_name}</p>
-                        {(role === 'Administrator') && (
-                            <EditButton />
-                        )}
                     </div>
                 </div>
                 {children}
