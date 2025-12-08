@@ -10,10 +10,10 @@ export default function ErrorRoute({ code }) {
         return <UnauthorizedPage />;
     case 403:
         return <ForbiddenPage />;
-    case 500:
-        return <ServerErrorPage />;
     case 404:
-    default:
         return <NotFoundPage />;
+    case 500:
+    default:
+        return <ServerErrorPage />;
   }
 }

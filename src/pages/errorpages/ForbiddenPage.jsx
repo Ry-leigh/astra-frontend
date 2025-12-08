@@ -1,7 +1,36 @@
 import React from "react"
 import { ArrowLeft, Home, Lock } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+
+  const Button = ({
+  children,
+  variant = "primary",
+  icon,
+  className = "",
+  ...props
+}) => {
+  const baseStyles =
+    "px-6 py-3 rounded-full font-medium transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base active:scale-95"
+
+  const variants = {
+    primary:
+      "bg-[#111827] text-white hover:bg-slate-800 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-slate-300/50",
+    secondary:
+      "bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm"
+  }
+  return (
+    <button
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+      {...props}
+    >
+      {icon && <span className="opacity-90">{icon}</span>}
+      {children}
+    </button>
+  )
+}
 
 export default function ForbiddenPage (){
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-brand-50 relative overflow-hidden p-6">
       {/* Soft Background Gradients */}
@@ -47,34 +76,19 @@ export default function ForbiddenPage (){
           for administrators or requires a different login.
         </p>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+        <div className="flex flex-col w-full sm:flex-row gap-4 sm:w-auto">
           <Button variant="primary" icon={<ArrowLeft size={18} />}>
-            Go Back
+            <button onClick={() => navigate(-1)}>
+              Go Back
+            </button>
           </Button>
           <Button variant="secondary" icon={<Home size={18} />}>
-            Go to Home
+            <button onClick={() => navigate("/")}>
+              Go to Home
+            </button>
           </Button>
         </div>
       </div>
     </div>
   )
-}
-
-const Button = ({
-  children,
-  variant = "primary",
-  icon,
-  className = "",
-  ...props
-}) => {
-  const baseStyles =
-    "px-6 py-3 rounded-full font-medium transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base active:scale-95"
-
-  const variants = {
-    primary:
-      "bg-[#111827] text-white hover:bg-slate-800 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-slate-300/50",
-    secondary:
-      "bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm"
-  }
 }

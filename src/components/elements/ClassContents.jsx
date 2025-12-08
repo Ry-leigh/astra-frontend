@@ -85,7 +85,7 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
             }
         } catch (error) {
             console.error("Error fetching class:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false);
         }
@@ -148,9 +148,9 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
     )
 }
 
-export function ClassAttendance({ role = '', date = ''}) {
+export function ClassAttendance({ role = '', date = ""}) {
     const { classCourseId } = useParams();
-    const formattedDate = date || '';
+    const [sessionDate, setSessionDate] = useState('')
     const [session, setSession] =useState({});
     const [attendanceRecords, setAttendanceRecords] =useState([]);
     const [loading, setLoading] = useState(true);
@@ -159,6 +159,7 @@ export function ClassAttendance({ role = '', date = ''}) {
     const [timeIn, setTimeIn] = useState(null);
     const [editTimeOut, setEditTimeOut] = useState(false);
     const [timeOut, setTimeOut] = useState(null);
+    const [time, setTime] = useState(dayjs().format("hh:mm"))
 
     const handleRecordAttendance = async ({ classCourseId, id, status, time_in = null, remarks = null}) => {
         try {
@@ -168,7 +169,7 @@ export function ClassAttendance({ role = '', date = ''}) {
             console.log("Attendance updated:", response.data, status, id, classCourseId);
         } catch (error) {
             console.error("Error recording attendance:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false)
         }
@@ -272,9 +273,9 @@ export function ClassAttendance({ role = '', date = ''}) {
         )
     }
 
-    const fetchAttendance = async () => {
+    const fetchAttendance = async ( selectedSessionDate = sessionDate ) => {
         try {
-            const response = await api.get(`/class/${classCourseId}/attendance/${formattedDate}`);
+            const response = await api.get(`/class/${classCourseId}/attendance/${selectedSessionDate}`);
             if(response.data.success){
                 console.log(response.data);
                 setSession(response.data.session)
@@ -284,7 +285,7 @@ export function ClassAttendance({ role = '', date = ''}) {
             }
         } catch (error) {
             console.error("Error fetching attendance records:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false)
         }
@@ -307,7 +308,7 @@ export function ClassAttendance({ role = '', date = ''}) {
             }
         } catch (error) {
             console.error("Error fetching attendance records:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false)
         }
@@ -325,26 +326,26 @@ export function ClassAttendance({ role = '', date = ''}) {
             }
         } catch (error) {
             console.error("Error fetching attendance records:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false)
         }
     }
 
-    const handleUpdateTimeIn = async () => {
+    const handleUpdateTimeIn = async ( selectedDate ) => {
         await api.put(`/class/${classCourseId}/attendance/${session?.id}`, {
             time_in: timeIn,
         });
         setEditTimeIn(false);
-        fetchAttendance();
+        fetchAttendance(selectedDate);
     };
 
-    const handleUpdateTimeOut = async () => {
+    const handleUpdateTimeOut = async ( selectedDate ) => {
         await api.put(`/class/${classCourseId}/attendance/${session?.id}`, {
             time_out: timeOut,
         });
         setEditTimeOut(false);
-        fetchAttendance();
+        fetchAttendance(selectedDate);
     };
 
     if (error) return <ErrorRoute code={error} />;
@@ -375,14 +376,14 @@ export function ClassAttendance({ role = '', date = ''}) {
                         {editTimeIn ? (
                         <div className="flex items-center gap-2">
                             <input
-                            type="time"
-                            value={session?.time_in ? session.time_in : dayjs().format("hh:mm")}
-                            onChange={(e) => setTimeIn(e.target.value)}
-                            className="border border-gray-300 rounded-lg p-1"
+                                type="time"
+                                value={session?.time_in ? session.time_in : timeIn}
+                                onChange={(e) => setTimeIn(e.target.value)}
+                                className="border border-gray-300 rounded-lg p-1"
                             />
 
                             <button
-                            onClick={handleUpdateTimeIn}
+                            onClick={() => handleUpdateTimeIn(session.session_date)}
                             className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
                             >
                             <CheckRoundedIcon fontSize="inherit" />
@@ -399,7 +400,7 @@ export function ClassAttendance({ role = '', date = ''}) {
                         <div className="flex items-center gap-2">
                             <div className="font-light ">{session?.time_in ? dayjs(session?.time_in, "HH:mm").format("hh:mm A") : "--:--"}</div>
                             <button
-                            onClick={() => setEditTimeIn(true)}
+                            onClick={() => {setEditTimeIn(true); session?.time_in ? null : setTimeIn(dayjs().format("hh:mm"))}}
                             className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
                             >
                             <EditRoundedIcon fontSize="inherit" />
@@ -411,13 +412,13 @@ export function ClassAttendance({ role = '', date = ''}) {
                             <div className="flex items-center gap-2">
                                 <input
                                 type="time"
-                                value={session?.time_out ? session.time_out : dayjs().format("hh:mm")}
+                                value={session?.time_out ? session.time_out : timeOut}
                                 onChange={(e) => setTimeOut(e.target.value)}
                                 className="border border-gray-300 rounded-lg p-1"
                                 />
 
                                 <button
-                                onClick={handleUpdateTimeOut}
+                                onClick={() => handleUpdateTimeOut(session.session_date)}
                                 className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
                                 >
                                 <CheckRoundedIcon fontSize="inherit" />
@@ -434,7 +435,7 @@ export function ClassAttendance({ role = '', date = ''}) {
                             <div className="flex items-center gap-2">
                                 <div className="font-light">{session?.time_out ? dayjs(session?.time_out, "HH:mm").format("hh:mm A") : "--:--"}</div>
                                 <button
-                                onClick={() => setEditTimeOut(true)}
+                                onClick={() => {setEditTimeOut(true); session?.time_out ? null : setTimeOut(dayjs().format("hh:mm"))}}
                                 className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
                                 >
                                 <EditRoundedIcon fontSize="inherit" />
@@ -508,7 +509,7 @@ export function ClassTask({ role = '', reloadKey }) {
             }
         } catch (error) {
             console.error("Error fetching class:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false);
         }
@@ -700,7 +701,7 @@ export function ClassTask({ role = '', reloadKey }) {
                             {(role === 'Officer' || role === 'Student') && (
                                 <td className="px-4 py-3 text-center space-x-3">
                                     <button onClick={() => handleMarkUnfinish(task.id)}
-                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-red-600 bg-red-50 hover:bg-red-100 transition"
+                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-gray-600 bg-gray-100 hover:bg-gray-200 transition"
                                     >
                                         Mark Unfinished
                                     </button>
@@ -793,7 +794,7 @@ export function ClassAnnouncement({ role = '' }) {
             }
         } catch (error) {
             console.error("Error fetching class:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false);
         }

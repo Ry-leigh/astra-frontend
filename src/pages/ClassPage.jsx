@@ -86,7 +86,7 @@ export default function ClassPage() {
             }
         } catch (error) {
             console.error("Error fetching class:", error);
-            setError(error?.response?.status || 404);
+            setError(error?.response?.status || 500);
         } finally {
             setLoading(false);
         }

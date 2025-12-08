@@ -195,12 +195,12 @@ function AllAnnouncements ({ loading, error, role, announcements, targetCatalog,
                         <div className="flex items-center w-fit h-full gap-4">
                             {(role === 'Administrator') && (
                             <div className="flex items-center gap-4">
-                                <div className="flex flex-col">
-                                    <div className="flex">
-                                        Targets:
+                                <div className="flex flex-col gap-0.5">
+                                    <div className="flex justify-end">
+                                        Visible to:
                                     </div>
-                                    <div className="flex text-sm max-w-xs text-wrap">
-                                        {announcement?.targets?.map(target => getTargetName(target, targetCatalog)).join(", ")}
+                                    <div className="flex text-sm max-w-xs text-wrap gap-1.5 justify-end">
+                                        {announcement?.targets?.map((target) => (<div className="bg-blue-100 text-xs rounded-sm py-0.5 px-1.5">{getTargetName(target, targetCatalog)}</div>))}
                                     </div>
                                 </div>
                                 <div className="flex flex-col">
