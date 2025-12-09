@@ -34,9 +34,12 @@ export default function CreateUserPage() {
   const [sectionOptions, setSectionOptions] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [formLoading, setFormLoading] = useState(false)
   const [error, setError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const handleSubmit = async (e) => {
+    setFormLoading(true)
     e.preventDefault();
 
     try {
@@ -60,6 +63,9 @@ export default function CreateUserPage() {
       navigate("/users");
     } catch (error) {
       console.error("Failed:", error.response?.data);
+      setErrorMessage(error.response?.data.message)
+    } finally {
+      setFormLoading(false)
     }
   };
 
@@ -327,7 +333,7 @@ export default function CreateUserPage() {
             </div>
           )}
 
-          <button type="submit" className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-base font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20">
+          <button type="submit" disabled={formLoading} className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-blue-400 text-white text-base font-medium cursor-pointer hover:bg-blue-500 hover:shadow-md/20 disabled:bg-blue-400/50 disabled:hover:bg-blue-400/50 disabled:hover:shadow-none">
             Create User
           </button>
         </form>

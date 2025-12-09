@@ -30,7 +30,7 @@ function Navigation({ activeTab, handleTabChange, role, children }) {
                 <h2>All</h2>
             </NavLink>
 
-            {/* <NavLink to="#" end className={`${neutral} ${activeTab === "general" ? active : inactive}`} onClick={() => handleTabChange("general")}>
+            <NavLink to="#" end className={`${neutral} ${activeTab === "general" ? active : inactive}`} onClick={() => handleTabChange("general")}>
                 <h2>General</h2>
             </NavLink>
             {(role === 'Administrator') && (
@@ -44,7 +44,7 @@ function Navigation({ activeTab, handleTabChange, role, children }) {
             </NavLink>
             <NavLink to="#" end className={`${neutral} ${activeTab === "past" ? active : inactive}`} onClick={() => handleTabChange("past")}>
                 <h2>Past</h2>
-            </NavLink> */}
+            </NavLink>
         </div>
         {children}
     </div>
@@ -114,196 +114,237 @@ export default function AnnouncementPage() {
     );
 }
 
-function AllAnnouncements ({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
+function AllAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
+    useEffect(() => { fetchAnnouncements(); }, []);
+
+    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (error) return <ErrorRoute code={error} />;
+
+    const today = new Date();
+
+    // ALL = everything except past
+    const filtered = announcements.filter(a => {
+        if (!a.event_date) return true;
+        return new Date(a.event_date) >= today;
+    });
+
+    return (
+        <FilteredAnnouncementList
+            role={role}
+            announcements={filtered}
+            fetchAnnouncements={fetchAnnouncements}
+            targetCatalog={targetCatalog}
+            emptyText="No announcements available."
+        />
+    );
+}
+
+
+function GeneralAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
+    useEffect(() => { fetchAnnouncements(); }, []);
+
+    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (error) return <ErrorRoute code={error} />;
+
+    // Filter: global only (visible to everyone)
+    const filtered = announcements.filter(a =>
+        a.targets.some(t => t.target_type === "global")
+    );
+
+    return (
+        <FilteredAnnouncementList
+            role={role}
+            announcements={filtered}
+            fetchAnnouncements={fetchAnnouncements}
+            targetCatalog={targetCatalog}
+            emptyText="No general announcements available."
+        />
+    );
+}
+
+function ProgramAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
+    useEffect(() => { fetchAnnouncements(); }, []);
+
+    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (error) return <ErrorRoute code={error} />;
+
+    // Filter: any target that is a program
+    const filtered = announcements.filter(a =>
+        a.targets.some(t => t.target_type === "program")
+    );
+
+    return (
+        <FilteredAnnouncementList
+            role={role}
+            announcements={filtered}
+            fetchAnnouncements={fetchAnnouncements}
+            targetCatalog={targetCatalog}
+            emptyText="No program announcements found."
+        />
+    );
+}
+
+function ClassAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
+    useEffect(() => { fetchAnnouncements(); }, []);
+
+    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (error) return <ErrorRoute code={error} />;
+
+    // Filter: target_type === "class_course"
+    const filtered = announcements.filter(a =>
+        a.targets.some(t => t.target_type === "class_course")
+    );
+
+    return (
+        <FilteredAnnouncementList
+            role={role}
+            announcements={filtered}
+            fetchAnnouncements={fetchAnnouncements}
+            targetCatalog={targetCatalog}
+            emptyText="No class announcements available."
+        />
+    );
+}
+
+function PastAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
+    useEffect(() => { fetchAnnouncements(); }, []);
+
+    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (error) return <ErrorRoute code={error} />;
+
+    const today = new Date();
+
+    // Past = event_date exists AND earlier than today
+    const filtered = announcements.filter(a => {
+        if (!a.event_date) return false;
+        return new Date(a.event_date) < today;
+    });
+
+    return (
+        <FilteredAnnouncementList
+            role={role}
+            announcements={filtered}
+            fetchAnnouncements={fetchAnnouncements}
+            targetCatalog={targetCatalog}
+            emptyText="No past announcements found."
+        />
+    );
+}
+
+function FilteredAnnouncementList({ role, announcements, fetchAnnouncements, targetCatalog, emptyText }) {
     const [selectedId, setSelectedId] = useState(null);
     const [openEditModal, setOpenEditModal] = useState(false);
-    const [openDeleteModal, setOpenDeleteModal] =useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [announcementTitle, setAnnouncementTitle] = useState(null);
 
-    useEffect(() => {
-        fetchAnnouncements();
-    }, []);
-
     function formatProgramName(str) {
-        const stopWords = ["in", "of", "and"]; 
-
+        const stopWords = ["in", "of", "and"];
         const parts = str.split(/(\d.*$)/);
         const title = parts[0].trim();
         const section = parts[1]?.trim();
-
         const acronym = title
             .split(" ")
-            .filter(word => !stopWords.includes(word.toLowerCase()))
-            .map(word => word[0].toUpperCase())
+            .filter(w => !stopWords.includes(w.toLowerCase()))
+            .map(w => w[0].toUpperCase())
             .join("");
-
-        return `${acronym} ${section ? section : ''}`;
+        return `${acronym} ${section ?? ""}`;
     }
 
-    const getTargetName = (target, targetCatalog) => {
-    if (target.target_type === "global") return "Everyone";
+    const getTargetName = (target) => {
+        if (target.target_type === "global") return "Everyone";
 
-    const list = targetCatalog[target.target_type]; 
-    if (!list) return `${targetCatalog[target.target_type]}`;
+        const list = targetCatalog[target.target_type];
+        if (!list) return "";
 
-    const item = list.find(entry => entry.id === target.target_id);
-    
-    if (target.target_type === "role") {
-        return `${item.name}s`
-    } else {
-        return item ? formatProgramName(item.name) : '';
-    }
+        const item = list.find(entry => entry.id === target.target_id);
+        if (!item) return "";
+
+        if (target.target_type === "role") return `${item.name}s`;
+        return formatProgramName(item.name);
     };
 
-    if (loading) return (
-        <div className="p-4">
-            Loading announcements...
-        </div>
-    );
-
-    if (error) return <ErrorRoute code={error} />;
+    if (!announcements.length)
+        return <div className="p-4 text-gray-500">{emptyText}</div>;
 
     return (
         <div className="flex flex-col h-full mb-4 px-2 overflow-y-scroll scrollbar-none gap-3">
-            {announcements.length > 0 ? (
-                announcements.map((announcement) => (
-                    <div key={announcement.id} className={`flex border items-center border-gray-200 rounded-md px-4 py-3 gap-4 text-nowrap ${role == "Administrator" ? "justify-between" : ""}`}>
-                        <div className="flex items-center w-fit h-full gap-4">
-                            <div className="flex flex-col w-18 gap-0.5">
-                                <div className="flex justify-end truncate">
-                                    {announcement.event_date? dateConverter(announcement.event_date) : 'TBD'}
-                                </div>
-                                <div className="flex justify-end truncate">
-                                    {announcement.event_date? (announcement.event_time? timeConverter(announcement.event_time) : 'All Day') : 'TBD'}
-                                </div>
+            {announcements.map(a => (
+                <div key={a.id} className={`flex border items-center border-gray-200 rounded-md px-4 py-3 gap-4 text-nowrap ${role == "Administrator" ? "justify-between" : ""}`}>
+                    {/* DATETIME */}
+                    <div className="flex items-center w-fit h-full gap-4">
+                        <div className="flex flex-col w-18 gap-0.5">
+                            <div className="flex justify-end truncate">
+                                {a.event_date ? dateConverter(a.event_date) : "TBD"}
                             </div>
-
-                            <div className="border-l-2 border-gray-300 h-9/10"/>
-
-                            <div className="flex flex-col h-15 justify-center gap-1">
-                                <div className="text-lg font-medium">
-                                    {announcement.title}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                    {announcement.description}
-                                </div>
+                            <div className="flex justify-end truncate">
+                                {a.event_date ? (a.event_time ? timeConverter(a.event_time) : "All Day") : "TBD"}
                             </div>
                         </div>
 
+                        <div className="border-l-2 border-gray-300 h-9/10" />
 
-
-                        <div className="flex items-center w-fit h-full gap-4">
-                            {(role === 'Administrator') && (
-                            <div className="flex items-center gap-4">
-                                <div className="flex flex-col gap-0.5">
-                                    <div className="flex justify-end">
-                                        Visible to:
-                                    </div>
-                                    <div className="flex text-sm max-w-xs text-wrap gap-1.5 justify-end">
-                                        {announcement?.targets?.map((target) => (<div className="bg-blue-100 text-xs rounded-sm py-0.5 px-1.5">{getTargetName(target, targetCatalog)}</div>))}
-                                    </div>
-                                </div>
-                                <div className="flex flex-col">
-                                    <button type="button" onClick={() => {setSelectedId(announcement.id); setOpenEditModal(true); }} className="inline-flex items-center justify-center rounded-md p-2 text-lg text-gray-800 hover:bg-gray-200 transition">
-                                        <EditRoundedIcon fontSize="inherit"/>
-                                    </button>
-                                    <button type="button" onClick={() => {setSelectedId(announcement.id); setAnnouncementTitle(announcement.title); setOpenDeleteModal(true); }} className="inline-flex items-center justify-center rounded-md p-2 text-lg text-red-600 hover:bg-red-100 transition">
-                                        <IndeterminateCheckBoxOutlinedIcon fontSize="inherit"/>
-                                    </button>
-                                </div>
-                            </div>
-                        )}
+                        {/* TITLE + DESC */}
+                        <div className="flex flex-col h-15 justify-center gap-1">
+                            <div className="text-lg font-medium">{a.title}</div>
+                            <div className="text-sm text-gray-600">{a.description}</div>
                         </div>
                     </div>
-                ))
-            ) : (
-                    <div>
-                        No past announcements found.
-                    </div>
 
-            )}
+                    {/* ADMIN CONTROLS */}
+                    {role === "Administrator" && (
+                        <div className="flex items-center w-fit h-full gap-4">
+                            <div className="flex flex-col gap-0.5">
+                                <span className="flex justify-end">Visible to:</span>
+                                <div className="flex text-sm max-w-xs text-wrap gap-1.5 justify-end">
+                                    {a.targets.map((t, i) => (
+                                        <div key={i} className="bg-blue-100 text-xs rounded-sm py-0.5 px-1.5">
+                                            {getTargetName(t)}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedId(a.id);
+                                        setOpenEditModal(true);
+                                    }}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-lg text-gray-800 hover:bg-gray-200 transition"
+                                >
+                                    <EditRoundedIcon fontSize="inherit" />
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedId(a.id);
+                                        setAnnouncementTitle(a.title);
+                                        setOpenDeleteModal(true);
+                                    }}
+                                    className="inline-flex items-center justify-center rounded-md p-2 text-lg text-red-600 hover:bg-red-100 transition"
+                                >
+                                    <IndeterminateCheckBoxOutlinedIcon fontSize="inherit" />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ))}
+
+            {/* MODALS */}
             <Modal open={openEditModal} onClose={() => setOpenEditModal(false)} title="Edit Announcement">
-                <EditAnnouncementForm announcementId={selectedId} onSuccess={() => fetchAnnouncements()} onClose={() => setOpenEditModal(false)} />
+                <EditAnnouncementForm announcementId={selectedId} onSuccess={fetchAnnouncements} onClose={() => setOpenEditModal(false)} />
             </Modal>
-            <DeleteAnnouncementModal 
+
+            <DeleteAnnouncementModal
                 open={openDeleteModal}
                 onClose={() => setOpenDeleteModal(false)}
                 announcementId={selectedId}
                 announcementTitle={announcementTitle}
-                onDeleted={() => fetchAnnouncements()}
+                onDeleted={fetchAnnouncements}
             />
         </div>
-    )
-}
-
-function GeneralAnnouncements ({ loading, error, role, announcements, fetchAnnouncements }) {
-    useEffect(() => {
-        fetchAnnouncements();
-    }, []);
-
-    if (loading) return (
-        <div className="p-4">
-            Loading announcements...
-        </div>
     );
-
-    if (error) return <ErrorRoute code={error} />;
-
-    return (
-        <div>Announcements for Everyone only...</div>
-    )
-}
-
-function ProgramAnnouncements ({ loading, error, role, announcements, fetchAnnouncements }) {
-    useEffect(() => {
-        fetchAnnouncements();
-    }, []);
-
-    if (loading) return (
-        <div className="p-4">
-            Loading announcements...
-        </div>
-    );
-
-    if (error) return <ErrorRoute code={error} />;
-
-    return (
-        <div>Program Announcements Only...</div>
-    )
-}
-
-function ClassAnnouncements ({ loading, error, role, announcements, fetchAnnouncements }) {
-    useEffect(() => {
-        fetchAnnouncements();
-    }, []);
-
-    if (loading) return (
-        <div className="p-4">
-            Loading announcements...
-        </div>
-    );
-
-    if (error) return <ErrorRoute code={error} />;
-
-    return (
-        <div>Program with year announcements only</div>
-    )
-}
-
-function PastAnnouncements ({ loading, error, role, announcements, fetchAnnouncements }) {
-    useEffect(() => {
-        fetchAnnouncements();
-    }, []);
-
-    if (loading) return (
-        <div className="p-4">
-            Loading announcements...
-        </div>
-    );
-
-    if (error) return <ErrorRoute code={error} />;
-
-    return (
-        <div>Past announcements only</div>
-    )
 }

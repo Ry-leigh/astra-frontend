@@ -45,7 +45,7 @@ export default function ClassesPage() {
             setSemester(sem.id);
           }
         });
-        role == 'Administrator' ? formattedSemesters.push({ value: -1, label: "Add Semester" }) : null
+        // role == 'Administrator' ? formattedSemesters.push({ value: -1, label: "Add Semester" }) : null
         setSemesterOptions(formattedSemesters)
       } else {
         throw new Error("Failed to load your classes");
@@ -63,9 +63,7 @@ export default function ClassesPage() {
   }, []);
 
   if (loading) return (
-
     <ClassesPreloader />
-
   );
 
   if (error) return <ErrorRoute code={error} />;
