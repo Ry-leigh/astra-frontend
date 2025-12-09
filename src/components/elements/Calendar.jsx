@@ -379,7 +379,7 @@ function WeekRow({ fetchEvents, week, events, month }) {
                     </div>
                 ))}
             </div>
-            <Modal open={openEventModal} onClose={() => setOpenEventModal(false)} title={selectedEvent?.title}>
+            <Modal open={openEventModal} onClose={() => setOpenEventModal(false)} title="Event Details">
                 <ViewEventModal onSuccess={fetchEvents} onClose={() => setOpenEventModal(false)} event={selectedEvent}/>
             </Modal>
         </div>

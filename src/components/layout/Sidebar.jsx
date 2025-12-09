@@ -28,7 +28,7 @@ export default function Sidebar({ collapsed=false }) {
         { name: "Courses", path: "/course", icon: <SchoolOutlinedIcon fontSize="small" /> }],
       bottom: [
         { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
-        { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
+        // { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
       ]
     },
     Instructor:
@@ -39,7 +39,7 @@ export default function Sidebar({ collapsed=false }) {
         { name: "Classes", path: "/classes", icon: <LibraryBooksOutlinedIcon fontSize="small" /> }],
       bottom: [
         { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
-        { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
+        // { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
       ]
     },
     Officer:
@@ -50,7 +50,7 @@ export default function Sidebar({ collapsed=false }) {
         { name: "Courses", path: "/classes", icon: <SchoolOutlinedIcon fontSize="small" /> }],
       bottom: [
         { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
-        { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
+        // { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
       ]
     },
     Student:
@@ -61,7 +61,7 @@ export default function Sidebar({ collapsed=false }) {
         { name: "Courses", path: "/classes", icon: <SchoolOutlinedIcon fontSize="small" /> }],
       bottom: [
         { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
-        { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
+        // { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
       ]
     }
   };
