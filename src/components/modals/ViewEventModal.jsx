@@ -29,7 +29,7 @@ const formatTime = timeStr => {
     })
 }
 
-export default function ViewEventModal({ event, onSuccess, onClose }) {
+export default function ViewEventModal({ event, onSuccess, onClose, onEdit, onDelete }) {
     const [categoryBg, setCategoryBg] = useState("");
     const [category, setCategory] = useState("");
     const { user } = useAuth();
@@ -65,7 +65,7 @@ export default function ViewEventModal({ event, onSuccess, onClose }) {
     return (
         <div className="flex flex-col w-fit -mt-4 gap-2">
 
-            <div className="flex flex-col w-100 overflow-y-auto p-4">
+            <div className="flex flex-col min-w-lg w-fit overflow-y-auto p-4">
                 {/* Title Section */}
                 <div className="flex flex-col mb-6">
                     <div className="flex items-center mb-2">
@@ -189,17 +189,22 @@ export default function ViewEventModal({ event, onSuccess, onClose }) {
             </div>
             {user.roles[0].name == "Administrator" && (
                 <div className="flex justify-end gap-2">
-                    <button onClick={() => {setOpenEditModal(true)}} className="gap-2 text-sm inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
-                        Edit Event<Pencil className="h-4 w-4" />
+                    <button
+                        onClick={onEdit}
+                        className="gap-2 text-sm inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
+                    >
+                        Edit Event <Pencil className="h-4 w-4" />
                     </button>
-                    <button onClick={() => {setOpenDeleteModal(true); onClose()}} className="gap-2 text-sm inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
-                        Delete Event<Trash className="h-4 w-4" />
+
+                    <button
+                        onClick={onDelete}
+                        className="gap-2 text-sm inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition"
+                    >
+                        Delete Event <Trash className="h-4 w-4" />
                     </button>
+
                 </div>
             )}
-            <Modal open={openEditModal} onClose={() => setOpenEditModal(false)} title={`Edit ${event.title}`}>
-                <EditCalendarEventForm event={event} onSuccess={onSuccess()} onClose={() => setOpenEditModal(false)}/>
-            </Modal>
         </div>
     );
 }

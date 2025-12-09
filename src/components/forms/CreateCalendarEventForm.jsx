@@ -109,7 +109,7 @@ export default function CreateCalendarEventForm({ onSuccess, onClose }) {
     function formatProgramName(str) {
         const stopWords = ["in", "of", "and"];
 
-        const parts = str.split(/(\d.*$)/);
+        const parts = str?.split(/(\d.*$)/);
         const title = parts[0].trim();
         const section = parts[1].trim();
 
@@ -131,6 +131,7 @@ export default function CreateCalendarEventForm({ onSuccess, onClose }) {
             if (response.data.success) {
                 setRoleOptions(response.data.roles)
                 setProgramOptions(response.data.programs)
+                console.log(response.data.classrooms)
                 const formattedClassrooms = response.data.classrooms.map(classroom => ({
                     id: classroom.id,
                     name: formatProgramName(classroom.name)

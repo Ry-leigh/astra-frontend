@@ -25,7 +25,8 @@ export default function Sidebar({ collapsed=false }) {
         { name: "Programs", path: "/programs", icon: <BusinessOutlinedIcon fontSize="small" /> },
         { name: "Classes", path: "/classes", icon: <LibraryBooksOutlinedIcon fontSize="small" /> },
         { name: "Users", path: "/users", icon: <GroupsOutlinedIcon fontSize="small" /> },
-        { name: "Courses", path: "/course", icon: <SchoolOutlinedIcon fontSize="small" /> }],
+        // { name: "Courses", path: "/course", icon: <SchoolOutlinedIcon fontSize="small" /> }
+      ],
       bottom: [
         { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
         // { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }

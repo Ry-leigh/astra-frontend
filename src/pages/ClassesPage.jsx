@@ -6,7 +6,6 @@ import { useAuth } from "@/context/AuthContext";
 import Layout from "@/components/layout/Layout";
 import ErrorRoute from "@/router/ErrorRoute";
 import CourseCard from "@/components/elements/CourseCard";
-import ClassesPreloader from "@/components/preloaders/ClassesPreloader";
 import PageHeader from "@/components/elements/PageHeader";
 import { Dropdown } from "@/components/elements/Dropdown";
 
@@ -63,14 +62,16 @@ export default function ClassesPage() {
   }, []);
 
   if (loading) return (
-    <ClassesPreloader />
+    <>
+    {(role == 'Administrator' || role == 'Insrtuctor') ? "Loading Classes..." : "Loading Courses..."}
+    </>
   );
 
   if (error) return <ErrorRoute code={error} />;
 
   return (
     <div className="flex flex-col w-full gap-6">
-      <PageHeader title={`Your ${role === 'Instructor' ? 'Classes' : 'Courses'}`}>
+      <PageHeader title={`Your ${role === 'Instructor' || role === 'Administrator' ? 'Classes' : 'Courses'}`}>
         <div className="flex h-full w-fit gap-2 items-center">
           <Dropdown
             label="Semester"

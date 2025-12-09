@@ -158,6 +158,7 @@ export default function EditCalendarEventForm({ event, onSuccess, onClose }) {
         }
 
         try {
+            {console.log(event)}
             const response = await api.put(`/calendars/${event.id}`, {
                 title,
                 description,
