@@ -2,16 +2,19 @@ import { useState, useRef, useEffect } from "react";
 
 export function FloatingLabelDropdown({
   label = "Select",
-  name,            
+  name,
   value,
   onChange,
   options = [],
 }) {
   const [open, setOpen] = useState(false);
+  const [dropdownDirection, setDropdownDirection] = useState("down"); // "down" or "up"
   const wrapperRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const isFilled = value !== "" && value !== null && value !== undefined;
 
+  // Close dropdown if clicked outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -22,23 +25,38 @@ export function FloatingLabelDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const selectedLabel =
-    options.find((o) => o.value === value)?.label || "";
+  const selectedLabel = options.find((o) => o.value === value)?.label || "";
+
+  // Toggle dropdown and decide direction
+  const handleToggleDropdown = () => {
+    if (!open) {
+      const wrapperRect = wrapperRef.current.getBoundingClientRect();
+      const dropdownHeight = dropdownRef.current?.offsetHeight || 200; // fallback
+      const viewportHeight = window.innerHeight;
+
+      // Check if there is enough space below
+      if (wrapperRect.bottom + dropdownHeight > viewportHeight && wrapperRect.top > dropdownHeight) {
+        setDropdownDirection("up");
+      } else {
+        setDropdownDirection("down");
+      }
+    }
+    setOpen((o) => !o);
+  };
 
   return (
     <div className="relative h-full w-full" ref={wrapperRef}>
-      {/* Hidden input so this dropdown becomes part of POST request */}
+      {/* Hidden input for forms */}
       <input type="hidden" name={name} value={value ?? ""} />
 
       {/* Floating Label */}
       <label
-        className={` absolute left-3 pointer-events-none bg-white transition-all duration-200 px-1.5
-          ${
-            isFilled
-              ? open
-                ? "-top-2 text-sm text-blue-400"
-                : "-top-2 text-sm text-gray-500"
-              : open
+        className={`absolute left-3 pointer-events-none bg-white transition-all duration-200 px-1.5
+          ${isFilled
+            ? open
+              ? "-top-2 text-sm text-blue-400"
+              : "-top-2 text-sm text-gray-500"
+            : open
               ? "-top-2 text-sm text-blue-400"
               : "top-3.5 text-gray-400 text-base"
           }`}
@@ -46,30 +64,21 @@ export function FloatingLabelDropdown({
         {label}
       </label>
 
-      {/* Select Box (custom UI) */}
+      {/* Select Box */}
       <div
-        onClick={() => setOpen((o) => !o)}
-        className={`
-          flex w-full h-full border rounded-xl bg-white px-4 items-center cursor-pointer select-none
+        onClick={handleToggleDropdown}
+        className={`flex w-full h-full border rounded-xl bg-white px-4 items-center cursor-pointer select-none
           transition-all duration-150
-          ${open ? "border-transparent ring-2 ring-blue-300" : "border-gray-300"}
-        `}
+          ${open ? "border-transparent ring-2 ring-blue-300" : "border-gray-300"}`}
       >
-        <div
-          className={`text-base ${
-            isFilled ? "text-gray-800" : "text-gray-400"
-          }`}
-        >
+        <div className={`text-base ${isFilled ? "text-gray-800" : "text-gray-400"}`}>
           {isFilled ? selectedLabel : ""}
         </div>
 
         {/* Arrow Icon */}
         <svg
-          className={`
-            w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 
-            text-gray-500 transition-transform duration-150
-            ${open ? "rotate-180" : ""}
-          `}
+          className={`w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-transform duration-150
+            ${open ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
@@ -82,8 +91,9 @@ export function FloatingLabelDropdown({
       {/* Dropdown Menu */}
       {open && (
         <ul
-          className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 
-                     rounded-lg shadow-lg z-20 max-h-45 overflow-auto animate-slide-down"
+          ref={dropdownRef}
+          className={`absolute left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-45 overflow-auto
+            ${dropdownDirection === "down" ? "mt-1 animate-slide-down" : "mb-1 bottom-full animate-slide-up"}`}
         >
           {options.map((opt) => (
             <li
@@ -93,9 +103,8 @@ export function FloatingLabelDropdown({
                 setOpen(false);
               }}
               className={`px-4 py-2 cursor-pointer transition-colors
-                hover:bg-gray-100 
-                ${opt.value === value ? "bg-blue-50 text-blue-600" : "text-gray-800"}
-              `}
+                hover:bg-gray-100
+                ${opt.value === value ? "bg-blue-50 text-blue-600" : "text-gray-800"}`}
             >
               {opt.label}
             </li>
@@ -103,7 +112,7 @@ export function FloatingLabelDropdown({
         </ul>
       )}
 
-      {/* Animation */}
+      {/* Animations */}
       <style>{`
         @keyframes slideDown {
           from { opacity: 0; transform: translateY(-4px); }
@@ -112,10 +121,19 @@ export function FloatingLabelDropdown({
         .animate-slide-down {
           animation: slideDown 0.15s ease-out;
         }
+
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+          animation: slideUp 0.15s ease-out;
+        }
       `}</style>
     </div>
   );
 }
+
 
 export function Dropdown({
   label = "Select",

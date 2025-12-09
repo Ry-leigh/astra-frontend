@@ -44,7 +44,7 @@ const Benefits = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="fade-up mb-16">
-          <h2 className="text-4xl font-bold text-slate-900">Solutions</h2>
+          <h2 className="text-4xl font-bold text-slate-900">Benefits</h2>
         </div>
 
         <div className="flex flex-col lg:flex-row items-center gap-16">

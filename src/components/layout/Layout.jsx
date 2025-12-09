@@ -121,9 +121,10 @@ export default function Layout({ children }) {
       <div className="flex flex-col flex-1">
         <header className="flex items-center justify-between gap-10 pr-6 pl-2 py-4 bg-white text-nowrap">
           <div className="flex gap-4">
-            <button onClick={() => setCollapsed(!collapsed)} className="inline-flex items-center justify-center rounded-lg p-2 text-xl bg-violet-50 text-violet-700 hover:bg-violet-700 hover:text-white transition">
+            {/* <button onClick={() => setCollapsed(!collapsed)} className="inline-flex items-center justify-center rounded-lg p-2 text-xl bg-violet-50 text-violet-700 hover:bg-violet-700 hover:text-white transition">
               <MenuRoundedIcon fontSize="inherit"/>
-            </button>
+            </button> */}
+            
             {/* replace with breadcrubs once availble */}
             <div className="flex items-center text-gray-500 hover:text-violet-400">Insert&nbsp;&nbsp;{'>'}&nbsp;&nbsp;Breadcrumbs&nbsp;&nbsp;{'>'}&nbsp;&nbsp;<p className="text-violet-700">Here</p></div>
           </div>

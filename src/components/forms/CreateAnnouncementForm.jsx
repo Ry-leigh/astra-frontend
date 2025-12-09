@@ -116,7 +116,7 @@ export default function CreateAnnouncementForm({ onSuccess, onClose }) {
     return (
         <form onSubmit={handleSubmit} className="flex gap-6">
             <div className="flex flex-col w-sm gap-4">
-                Event Details
+                Announcement Details
                 <div className="flex flex-col gap-4">
                     <TextInput
                         name="title"
@@ -159,7 +159,7 @@ export default function CreateAnnouncementForm({ onSuccess, onClose }) {
                 
             </div>
             <div className="flex flex-col gap-4 w-xs">
-                Targets
+                Visible To
                 <Switch
                     checked={global}
                     onChange={setGlobal}

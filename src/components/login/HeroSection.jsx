@@ -4,6 +4,17 @@ import schoolLogo from "@/assets/lv-logo.svg"
 import schoolImage from "@/assets/lv.png"
 
 export default function HeroSection() {
+const sendEmail = () => {
+  const email = "example@example.com";
+  const subject = "Good Day";
+  const body = 
+    "Hello,\n\nMy name is [Your Name]. I would like to request an account.\n\nThank you.";
+
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  window.open(gmailUrl, "_blank");
+};
+
   return (
     <div className="relative w-full md:w-1/2 bg-violet-800 overflow-hidden flex flex-col justify-between p-8 md:p-12 min-h-[400px] md:min-h-[600px]">
       {/* Background Image with Overlay */}
@@ -37,7 +48,7 @@ export default function HeroSection() {
         </div>
 
         <div className="pt-8">
-          <Button className="w-full md:w-auto min-w-[200px] font-semibold shadow-violet-500/20">
+          <Button onClick={sendEmail} className="w-full md:w-auto min-w-[200px] font-semibold shadow-violet-500/20">
             Request Account
           </Button>
         </div>

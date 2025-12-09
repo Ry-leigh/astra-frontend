@@ -32,7 +32,7 @@ const About = () => {
           {/* Overlapping Text Card */}
           <div className="relative mt-8 lg:mt-0 lg:absolute lg:top-1/2 lg:right-0 lg:-translate-y-1/2 lg:w-1/2 bg-white rounded-2xl p-8 md:p-10 shadow-xl border border-slate-100 z-20 fade-up delay-300">
             <h4 className="text-lg font-bold text-slate-900 mb-4">
-              Academic Scheduling Tracking & Reporting App
+              Attendance, Scheduling Tracking & Reporting App 
             </h4>
             <div className="text-slate-600 space-y-4 text-sm md:text-base leading-relaxed">
               <p>

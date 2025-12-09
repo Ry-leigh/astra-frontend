@@ -8,16 +8,37 @@ export default function SearchableDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [direction, setDirection] = useState("down"); // 👈 NEW
   const wrapperRef = useRef(null);
+  const dropdownRef = useRef(null); // 👈 NEW
 
   const selectedOption = options.find((o) => o.value === value);
   const displayLabel = selectedOption?.label || "";
-
   const isFilled = Boolean(value);
 
   const filteredOptions = options.filter((opt) =>
     opt.label.toLowerCase().includes(query.toLowerCase())
   );
+
+  // 🔍 Detect when dropdown should flip
+  useEffect(() => {
+    if (!open) return;
+
+    const wrapper = wrapperRef.current;
+    const dropdown = dropdownRef.current;
+
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const dropdownHeight = dropdown.offsetHeight;
+
+    const spaceBelow = window.innerHeight - wrapperRect.bottom;
+    const spaceAbove = wrapperRect.top;
+
+    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+      setDirection("up");
+    } else {
+      setDirection("down");
+    }
+  }, [open, filteredOptions.length]);
 
   // Close on click-outside
   useEffect(() => {
@@ -35,19 +56,19 @@ export default function SearchableDropdown({
       {/* Floating Label */}
       <label
         className={`
-          absolute left-3 bg-white px-1 text-gray-500 pointer-events-none transition-all duration-200
-          ${isFilled || open ? "-top-2 text-xs text-gray-600" : "top-3.5 text-base text-gray-400"}
-          peer-focus:text-blue-600 peer-focus:-top-2 peer-focus:text-xs
+          absolute left-3 bg-white px-1 pointer-events-none transition-all duration-200
+          ${open ? "text-blue-400" : "text-gray-500"} 
+          ${isFilled ? "-top-2 text-sm" : "top-3.5 text-base"}
         `}
       >
         {label}
       </label>
 
-      {/* Input box */}
+      {/* Input Box */}
       <div
         onClick={() => setOpen((prev) => !prev)}
         className={`
-          peer flex items-center w-full min-h-12 px-3 py-2 border rounded-xl bg-white cursor-pointer
+          peer flex items-center w-full min-h-13 px-3 py-2 border rounded-xl bg-white cursor-pointer
           transition-all duration-150 select-none
           ${open ? "border-transparent ring-2 ring-blue-300" : "border-gray-300"}
         `}
@@ -69,18 +90,25 @@ export default function SearchableDropdown({
         </svg>
       </div>
 
-      {/* Dropdown menu */}
+      {/* Dropdown */}
       {open && (
-        <div className="absolute left-0 right-0 mt-1 bg-white border rounded-xl shadow-lg border-gray-200 z-20 animate-dropdown overflow-hidden">
-          
-          {/* Search bar */}
+        <div
+          ref={dropdownRef}
+          className={`
+            absolute left-0 right-0 bg-white border rounded-xl shadow-lg border-gray-200 z-20
+            animate-dropdown overflow-hidden
+            ${direction === "down" ? "mt-1 top-full" : "bottom-full mb-1"}  /* 👈 FLIP HERE */
+          `}
+        >
+          {/* Search Bar */}
           <div className="p-2 border-b border-gray-200">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search..."
-              className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg 
+              focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
 
@@ -97,10 +125,7 @@ export default function SearchableDropdown({
                   setOpen(false);
                   setQuery("");
                 }}
-                className="
-                  px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors
-                  flex items-center justify-between
-                "
+                className={`px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors flex items-center justify-between ${value === opt.value ? "bg-blue-100" : ""}`}
               >
                 <span className="text-gray-800">{opt.label}</span>
                 {value === opt.value && (

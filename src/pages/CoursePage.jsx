@@ -23,7 +23,7 @@ function toOrdinal(n) {
 
 export default function CoursePage() {
   const navigate = useNavigate();
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [classroom, setClassroom] = useState("");
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,14 +52,14 @@ export default function CoursePage() {
       if (res.data.success) {
         const today = new Date();
         const formattedSemesters = res.data.semesters.map(s => ({
-            value: s.id,
-            label: `${toOrdinal(s.semester)} Semester`
+          value: s.id,
+          label: `${toOrdinal(s.semester)} Semester`
         }));
 
         res.data.semesters.forEach((sem, index) => {
           const startDate = new Date(sem.start_date);
           if (today >= startDate) {
-            setSemesterId(sem.id); 
+            setSemesterId(sem.id);
           }
         });
         setSemesterOptions(formattedSemesters)
@@ -79,10 +79,10 @@ export default function CoursePage() {
   }, []);
 
   if (loading) return (
-      <>
-        <CoursePreloader />
-      </>
-    );
+    <>
+      <CoursePreloader />
+    </>
+  );
 
   if (error) return <ErrorRoute code={error} />;
 
@@ -90,21 +90,21 @@ export default function CoursePage() {
     <>
       <div className="flex flex-col w-full gap-6">
         <PageHeader title={`${classroom.name} Courses`}>
-                    <div className="flex h-9/10 w-fit items-center gap-3">
-                        <div className="flex h-full w-42 gap-2 items-center">
-                            <Dropdown
-                                label="Semester"
-                                name="semester"
-                                value={semesterId}
-                                onChange={(e) => {if (e == -1) {setSemesterOptions(semesterOptions[-1]); navigate("/settings")} else {setSemesterId(e)}}}
-                                options={semesterOptions}
-                            />
-                        </div>
-                        <button type="button" onClick={() => setAddCourseModalOpen(true)} className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-violet-600 text-white text-sm font-medium cursor-pointer hover:bg-violet-700 hover:shadow-md/20">
-                           <AddRoundedIcon/>
-                        </button>
-                    </div>
-                </PageHeader>
+          <div className="flex h-9/10 w-fit items-center gap-3">
+            <div className="flex h-full w-42 gap-2 items-center">
+              <Dropdown
+                label="Semester"
+                name="semester"
+                value={semesterId}
+                onChange={(e) => { if (e == -1) { setSemesterOptions(semesterOptions[-1]); navigate("/settings") } else { setSemesterId(e) } }}
+                options={semesterOptions}
+              />
+            </div>
+            <button type="button" onClick={() => setAddCourseModalOpen(true)} className="flex h-fit w-fit px-4 py-2 rounded-md gap-2 items-center bg-violet-600 text-white text-sm font-medium cursor-pointer hover:bg-violet-700 hover:shadow-md/20">
+              <AddRoundedIcon />
+            </button>
+          </div>
+        </PageHeader>
         {courses.length === 0 ? (
           <p>No courses found.</p>
         ) : (
@@ -122,17 +122,17 @@ export default function CoursePage() {
 
                 if (item.semester_id == semesterId) {
                   return (
-                  <CourseCard
-                    key={item.id}
-                    classCourseId={item.id}
-                    courseName={courseName}
-                    courseInstructor={instructorName}
-                    semesterId={item.semester_id}
-                    color={item?.color || '#E4E4E4'}
-                    onEdit={(item) => { setSelectedCourse(c); setEditModalOpen(true); console.log(c) }}
-                    onDelete={(item) => { setSelectedCourse(c); setDeleteModalOpen(true) }}
-                  />
-                );
+                    <CourseCard
+                      key={item.id}
+                      classCourseId={item.id}
+                      courseName={courseName}
+                      courseInstructor={instructorName}
+                      semesterId={item.semester_id}
+                      color={item?.color || '#E4E4E4'}
+                      onEdit={(item) => { setSelectedCourse(c); setEditModalOpen(true); console.log(c) }}
+                      onDelete={(item) => { setSelectedCourse(c); setDeleteModalOpen(true) }}
+                    />
+                  );
                 }
               })}
             </div>
@@ -141,11 +141,11 @@ export default function CoursePage() {
       </div>
       <Modal open={addCourseModalOpen} onClose={() => setAddCourseModalOpen(false)} title="Add Course">
         <AddCourseForm
-          classroomId={id} 
+          classroomId={id}
           academicYearId={classroom.academic_year_id}
           semesterId={semesterId}
           onSuccess={fetchCourses}
-          onClose={() => setAddCourseModalOpen(false)} 
+          onClose={() => setAddCourseModalOpen(false)}
         />
       </Modal>
       <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)} title={`Edit Course`} >
@@ -155,7 +155,7 @@ export default function CoursePage() {
           academicYearId={classroom.academic_year_id}
           semesterId={semesterId}
           onSuccess={fetchCourses}
-          onClose={() => setEditModalOpen(false)} 
+          onClose={() => setEditModalOpen(false)}
         />
       </Modal>
       <DeleteClassCourseModal

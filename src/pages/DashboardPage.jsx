@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react"
 import { AreaChart, Area, Tooltip, ResponsiveContainer, XAxis } from "recharts"
-import { UserRoundCheck, UserRoundMinus, UserRoundX, CircleUserRound, GraduationCap, Presentation, Clock, MapPin  } from "lucide-react"
+import { UserRoundCheck, UserRoundMinus, UserRoundX, CircleUserRound, GraduationCap, Presentation, Clock, MapPin, CalendarDays  } from "lucide-react"
 import dayjs from "dayjs"
 import advancedFormat from "dayjs/plugin/advancedFormat"
 
@@ -55,7 +55,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 const AttendanceChart = ({ attendance }) => {
   const [visible, setVisible] = useState({
     present: true,
-    excused: true,
+    late: true,
     absent: true
   })
 
@@ -90,25 +90,25 @@ const AttendanceChart = ({ attendance }) => {
           role="button"
           aria-pressed={visible.present}
         >
-          <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center text-violet-600">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
             <UserRoundCheck />
           </div>
-          <span className="font-medium text-violet-600">Present</span>
+          <span className="font-medium text-blue-500">Present</span>
         </div>
 
-        {/* excused Stat */}
+        {/* late Stat */}
         <div
-          onClick={() => toggleSeries("excused")}
+          onClick={() => toggleSeries("late")}
           className={`flex items-center gap-3 cursor-pointer transition-all duration-200 ${
-            visible.excused ? "opacity-100" : "opacity-40 grayscale"
+            visible.late ? "opacity-100" : "opacity-40 grayscale"
           }`}
           role="button"
-          aria-pressed={visible.excused}
+          aria-pressed={visible.late}
         >
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-400">
+          <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-400">
             <UserRoundMinus size={20}/>
           </div>
-          <span className="font-medium text-blue-600">Excused</span>
+          <span className="font-medium text-orange-500">Late</span>
         </div>
 
         {/* absent Stat */}
@@ -136,12 +136,12 @@ const AttendanceChart = ({ attendance }) => {
           >
             <defs>
               <linearGradient id="colorFb" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.2} />
-                <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="colorTw" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
                 <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorTw" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#f97316" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorYt" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
@@ -166,7 +166,7 @@ const AttendanceChart = ({ attendance }) => {
             <Area
               type="monotone"
               dataKey="present"
-              stroke="#7c3aed"
+              stroke="#3b82f6"
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorFb)"
@@ -175,12 +175,12 @@ const AttendanceChart = ({ attendance }) => {
             />
             <Area
               type="monotone"
-              dataKey="excused"
-              stroke="#3b82f6"
+              dataKey="late"
+              stroke="#f97316"
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorTw)"
-              hide={!visible.excused}
+              hide={!visible.late}
               animationDuration={500}
             />
             <Area
@@ -231,9 +231,9 @@ const ScheduleTimeline = ({ scheduleData }) => {
         <div>
           <h2 className="text-lg font-bold text-gray-900">Today's Schedule</h2>
         </div>
-      </div>
-
-      <div className="relative grow h-10 overflow-y-auto pr-2 scrollbar-none">
+      </div>  
+    <div className="relative grow h-10 overflow-y-auto before:content-[''] before:absolute before:left-1/2 before:top-0 before:-translate-x-1/2 before:h-full before:w-0 before:bg-gray-300 scrollbar-none">
+      <div className="relative pr-2 scrollbar-none">
         {/* Vertical Line */}
         <div className="absolute left-18 top-2 bottom-0 w-0.5 bg-gray-100" />
 
@@ -253,8 +253,8 @@ const ScheduleTimeline = ({ scheduleData }) => {
             // Using 6-digit hex + alpha (supported in modern browsers)
             // 15 = ~8% opacity, 33 = ~20% opacity, 40 = ~25% opacity
             const bgStyle = {
-              backgroundColor: `${color}15`,
-              borderColor: `${color}40`
+              backgroundColor: `${color}25`,
+              borderColor: `${color}90`
             }
 
             return (
@@ -327,6 +327,7 @@ const ScheduleTimeline = ({ scheduleData }) => {
           })}
         </div>
       </div>
+      </div>
     </div>
   )
 }
@@ -338,21 +339,11 @@ export default function DashboardPage() {
     const [activeUsers, setActiveUsers] = useState(null);
     const [studentCount, setStudentCount] = useState(null);
     const [instructorCount, setInstructorCount] = useState(null);
-    const [attendance, setAttendance] = useState([
-      { name: "Jan", present: 13, excused: 0, absent: 1 },
-      { name: "Feb", present: 0, excused: 0, absent: 0 },
-      { name: "Mar", present: 0, excused: 0, absent: 0 },
-      { name: "Apr", present: 0, excused: 0, absent: 0 },
-      { name: "May", present: 0, excused: 0, absent: 0 },
-      { name: "Jun", present: 0, excused: 0, absent: 0 },
-      { name: "Jul", present: 0, excused: 0, absent: 0 },
-      { name: "Aug", present: 0, excused: 0, absent: 0 },
-      { name: "Sep", present: 0, excused: 0, absent: 0 },
-      { name: "Oct", present: 0, excused: 0, absent: 0 },
-      { name: "Nov", present: 0, excused: 0, absent: 0 },
-      { name: "Dec", present: 0, excused: 0, absent: 0 }
-    ])
+    const [attendance, setAttendance] = useState([])
     const [schedule, setSchedule] = useState([]);
+    const [year, setYear] = useState(null)
+    const [minYear, setMinYear] = useState()
+    const [maxYear, setMaxYear] = useState()
 
 
     const fetchDashboard = async () => {
@@ -374,17 +365,30 @@ export default function DashboardPage() {
       } finally {
           setLoading(false);
       }
-  };
+    };
+
+    const fetchAttendance = async () => {
+      setLoading(true)
+      try {
+          const response = await api.get(`/dashboard/attendance/${year}`);
+          console.log(response.data);
+          if(response.data.success){
+            setAttendance(response.data.attendance);
+          } else {
+              throw new Error("Failed to load attendance data");
+          }
+      } catch (error) {
+          console.error("Error fetching attendance data:", error);
+          setError(error?.response?.status || 404);
+      } finally {
+          setLoading(false);
+      }
+    };
 
   useEffect(() => {
       fetchDashboard();
+      fetchAttendance();
   }, []);
-
-    if (loading) return (
-        <div className="p-4">
-            Loading announcements...
-        </div>
-    );
 
   return (
     <>
@@ -429,9 +433,14 @@ export default function DashboardPage() {
             <AttendanceChart attendance={attendance}/>
           </div>
           <div className="flex flex-col h-full w-4/13 gap-4">
-            <div className="flex flex-col w-full h-fit bg-white p-4 rounded-lg">
-                <div className="font-semibold">{dayjs().format("MMMM D, YYYY")}</div>
-                <div className="text-sm">{dayjs().format("dddd")}</div>
+            <div className="flex flex-row w-full h-fit bg-white p-4 rounded-lg justify-between items-center">
+                <div className="flex flex-col">
+                  <div className="font-semibold">{dayjs().format("MMMM D, YYYY")}</div>
+                  <div className="text-sm">{dayjs().format("dddd")}</div>
+                </div>                
+                <div className="pr-3 pl-5 border-l-3 h-9 border-gray-600 flex items-center justify-center text-gray-600">
+                  <CalendarDays />
+                </div>
             </div>
               <ScheduleTimeline scheduleData={schedule}/>
     

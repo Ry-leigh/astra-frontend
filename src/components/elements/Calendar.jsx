@@ -42,115 +42,57 @@ export function CalendarRadio({ activeTab = "month", handleTabChange = () => {} 
     )
 }
 
-export default function Calendar() {
-    const [events, setEvents] = useState([]);
-    const [currentMonth, setCurrentMonth] = useState(dayjs());
-    const [loading, setLoading] = useState(true);
-    const [role, setRole] = useState('');
-    const { user } = useAuth();
+export default function Calendar({ events, loading }) {
+  const [currentMonth, setCurrentMonth] = useState(dayjs());
+  const [activeTab, setActiveTab] = useState('month');
 
-    const fetchEvents = async () => {
-        try {
-            setRole(user.roles[0].name);
-            const response = await api.get("/calendar");
-            console.log(response.data)
-            if (response.data.success) {
-                const mapped = response.data.schedules.map(event => ({
-                    id: event.id,
-                    title: event.title,
-                    description: event.description,
-                    start: event.start_date,
-                    end: event.end_date ?? event.start_date,
-                    allDay: event.all_day === 1,
-                    timeStart: event.start_time,
-                    timeEnd: event.end_time,
-                    repeats: event.repeats,
-                    category: event.category,
-                    targets: event.targets
-                }));
-                setEvents(mapped);
-            }
-        } catch (error) {
-            console.error("Error fetching events:", error);
-            setError(error?.response?.status || 404);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const startOfMonth = currentMonth.startOf("month");
+  const endOfMonth = currentMonth.endOf("month");
 
-    useEffect(() => {
-        fetchEvents();
-    }, [])
+  const startDate = startOfMonth.startOf("week");
 
-    const startOfMonth = currentMonth.startOf("month");
-    const endOfMonth = currentMonth.endOf("month");
+  const days = [];
+  for (let i = 0; i < 42; i++) {
+    days.push(startDate.add(i, "day"));
+  }
 
-    const startDate = startOfMonth.startOf("week");
+  const weeks = [];
+  for (let i = 0; i < 42; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
 
-    const days = [];
-    for (let i = 0; i < 42; i++) {
-        days.push(startDate.add(i, "day"));
-    }
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+  };
 
-    const weeks = [];
-    for (let i = 0; i < 42; i += 7) {
-        weeks.push(days.slice(i, i + 7));
-    }
-
-    const [activeTab, setActiveTab] = useState('month');
-
-    const handleTabChange = (tabId) => {
-        setActiveTab(tabId)
-    }
-
-    return (
-        <div>
-            <div className="flex pl-4 py-4 items-center gap-4 pr-1">
-                    {
-                        activeTab === "month" ? (
-                            <div className='flex gap-2 items-center'>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.subtract(1, "month"))}><KeyboardArrowLeftOutlinedIcon /></button>
-                                    <p className="text-lg font-medium">{currentMonth.format("MMM YYYY")}</p>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.add(1, "month"))}><KeyboardArrowRightOutlinedIcon /></button>
-                            </div>
-                        ) : activeTab === "week" ? (
-                            <div className='flex gap-2 items-center'>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.subtract(1, "week"))}><KeyboardArrowLeftOutlinedIcon /></button>
-                                    <p className="text-lg font-medium">{currentMonth.format("MMM DD YYYY")}</p>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.add(1, "week"))}><KeyboardArrowRightOutlinedIcon /></button>
-                            </div>
-                        ) : activeTab === "day" ? (
-                            <div className='flex gap-2 items-center'>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.subtract(1, "day"))}><KeyboardArrowLeftOutlinedIcon /></button>
-                                    <p className="text-lg font-medium">{currentMonth.format("MMM DD YYYY")}</p>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.add(1, "day"))}><KeyboardArrowRightOutlinedIcon /></button>
-                            </div>
-                        ) : activeTab === "list" ? (
-                            <div className='flex gap-2 items-center'>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.subtract(1, "month"))}><KeyboardArrowLeftOutlinedIcon /></button>
-                                    <p className="text-lg font-medium">{currentMonth.format("MMM YYYY")}</p>
-                                <button className='cursor-pointer' onClick={() => setCurrentMonth(currentMonth.add(1, "month"))}><KeyboardArrowRightOutlinedIcon /></button>
-                            </div>
-                        ) : null
-                    }
-                    
-                <div className='flex w-full'/>
-                <PrimaryButtonOutlined>Today</PrimaryButtonOutlined>
-                <CalendarRadio activeTab={activeTab} handleTabChange={handleTabChange}/>
-            </div>
-            {
-                activeTab === "month" ? (
-                    <MonthView weeks={weeks} events={events} currentMonth={currentMonth}/>
-                ) : activeTab === "week" ? (
-                    <WeekView events={events} currentDay={currentMonth}/>
-                ) : activeTab === "day" ? (
-                    <DayView events={events} currentDay={currentMonth}/>
-                ) : activeTab === "list" ? (
-                    <ListView weeks={weeks} events={events} currentMonth={currentMonth}/>
-                ) : null
-            }
+  return (
+    <div>
+      <div className="flex pl-4 py-4 items-center gap-4 pr-1">
+        <div className="flex gap-2 items-center">
+          <button className="cursor-pointer" onClick={() => setCurrentMonth(currentMonth.subtract(1, "month"))}><KeyboardArrowLeftOutlinedIcon /></button>
+          <p className="text-lg font-medium">{currentMonth.format("MMM YYYY")}</p>
+          <button className="cursor-pointer" onClick={() => setCurrentMonth(currentMonth.add(1, "month"))}><KeyboardArrowRightOutlinedIcon /></button>
         </div>
-    );
+
+        <div className="flex w-full" />
+        <button onClick={() => setCurrentMonth(dayjs())} className="flex h-fit w-fit px-4 py-2 border rounded-md gap-2 items-center border-blue-400 text-blue-400 text-sm font-medium hover:bg-blue-50">
+            Today
+        </button>
+        <CalendarRadio activeTab={activeTab} handleTabChange={handleTabChange} />
+      </div>
+
+      {loading ? (
+        <div className="h-full">Loading events...</div>
+      ) : (
+        <>
+          {activeTab === "month" && <MonthView weeks={weeks} events={events} currentMonth={currentMonth} />}
+          {activeTab === "week" && <WeekView events={events} currentDay={currentMonth} />}
+          {activeTab === "day" && <DayView events={events} currentDay={currentMonth} />}
+          {activeTab === "list" && <ListView weeks={weeks} events={events} currentMonth={currentMonth} />}
+        </>
+      )}
+    </div>
+  );
 }
 
 function MonthView({ weeks, events, currentMonth }) {

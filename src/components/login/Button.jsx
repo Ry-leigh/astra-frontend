@@ -1,6 +1,7 @@
 import React from "react"
 
 export default function Button({
+  onClick,
   children,
   variant = "primary",
   className = "",
@@ -23,6 +24,7 @@ export default function Button({
 
   return (
     <button
+      onClick={onClick}
       className={`${baseStyles} ${variants[variant]} ${className}`}
       disabled={isLoading || props.disabled}
       {...props}

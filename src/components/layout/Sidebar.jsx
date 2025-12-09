@@ -11,6 +11,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import logo from "@/assets/logo.png"
 
 export default function Sidebar({ collapsed=false }) {
   const { user, loading } = useAuth();
@@ -78,7 +79,7 @@ export default function Sidebar({ collapsed=false }) {
     <aside className={`bg-white h-screen ${collapsed ? 'w-21.5' : 'w-3xs'} transition-all duration-300 flex flex-col px-4 pb-8`}>
       <div className="flex items-center px-2 py-5">
         <Link className="flex items-center w-fit h-10 gap-4" to={"/"}>
-          <div className="bg-violet-600 h-full aspect-square rounded-full" />
+          <img src={logo} alt="A" className="w-9"/>
           {!collapsed && <div className="font-bold text-xl">ASTRA</div>}
         </Link>
       </div>

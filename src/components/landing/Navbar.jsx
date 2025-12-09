@@ -18,7 +18,7 @@ function Navbar({ user }) {
   const navLinks = [
     { name: "Features", href: "#features" },
     { name: "About Us", href: "#about" },
-    { name: "Solutions", href: "#benefits" }
+    { name: "Benefits", href: "#benefits" }
   ]
 
   return (
@@ -37,7 +37,7 @@ function Navbar({ user }) {
         </div>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 justify-self-start">
           {navLinks.map(link => (
             <a
               key={link.name}
