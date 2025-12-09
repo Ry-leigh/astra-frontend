@@ -7,6 +7,7 @@ import PageHeader from "@/components/elements/PageHeader";
 import TextInput from "@/components/elements/TextInput";
 import { FloatingLabelDropdown } from "@/components/elements/Dropdown";
 import ErrorRoute from "@/router/ErrorRoute"; 
+import Preloader from "@/components/preloaders/Preloader";
 
 function capitalizeWords(str) {
   return str
@@ -159,10 +160,7 @@ export default function CreateUserPage() {
   }, [program, yearLevel, classrooms]);
 
   if (loading) return (
-    <>
-      <PageHeader title="Create User"/>
-        <div className="flex flex-col h-full bg-white rounded-xl p-6 pt-8 gap-6"/>
-    </>
+    <Preloader text="Loading create fields"/>
   )
 
   if (error) return <ErrorRoute code={error} />;

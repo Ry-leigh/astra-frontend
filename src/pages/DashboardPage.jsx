@@ -225,9 +225,9 @@ const calculateDuration = (start, end) => {
   return `${mins}m`
 }
 
-const ScheduleTimeline = ({ scheduleData }) => {
+const ScheduleTimeline = ({ scheduleData, role }) => {
   return (
-    <div className="bg-white h-full rounded-lg p-6 flex flex-col mb-4">
+    <div className={`bg-white h-full rounded-lg p-6 flex flex-col ${role == 'Administrator' ? "" : "mb-4"}`}>
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h2 className="text-lg font-bold text-gray-900">Today's Schedule</h2>
@@ -604,7 +604,7 @@ export default function DashboardPage() {
                 <CalendarDays />
               </div>
             </div>
-            <ScheduleTimeline scheduleData={schedule} />
+            <ScheduleTimeline scheduleData={schedule} role={user.roles[0].name}/>
             {console.log(schedule)}
           </div>
         </div>

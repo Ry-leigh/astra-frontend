@@ -25,14 +25,14 @@ const Preloader = ({ isLoading=true, onTransitionEnd, text="Loading" }) => {
     >
       <div className="relative flex items-center justify-center">
         {/* Decorative rotating gradient ring */}
-        <div className="absolute w-40 h-40 rounded-full bg-linear-to-tr from-purple-500 via-blue-400 to-purple-200 opacity-20 animate-spin-slow blur-xl"></div>
+        <div className="absolute w-32 h-32 rounded-full bg-linear-to-tr from-purple-500 via-blue-400 to-purple-200 opacity-20 animate-spin-slow blur-xl"></div>
 
         {/* Outer Ring Spinner */}
-        <div className="absolute w-32 h-32 rounded-full border-4 border-slate-100 border-t-purple-600 border-r-blue-400 animate-spin"></div>
+        <div className="absolute w-24 h-24 rounded-full border-3 border-slate-100 border-t-purple-600 border-r-blue-400 animate-spin"></div>
 
         {/* Inner Ring Reverse Spinner (Subtle) */}
         <div
-          className="absolute w-24 h-24 rounded-full border-2 border-slate-50 border-b-purple-300 animate-spin"
+          className="absolute w-16 h-16 rounded-full border-2 border-slate-50 border-b-purple-300 animate-spin"
           style={{ animationDirection: "reverse", animationDuration: "2s" }}
         ></div>
 
@@ -41,7 +41,7 @@ const Preloader = ({ isLoading=true, onTransitionEnd, text="Loading" }) => {
           <img
             src={logo}
             alt="A"
-            className="w-16 h-16 object-contain"
+            className="w-8 h-8 object-contain"
           />
         </div>
       </div>

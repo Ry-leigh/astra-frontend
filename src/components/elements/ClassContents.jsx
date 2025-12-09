@@ -25,6 +25,7 @@ import TimePicker from "./TimePicker";
 import Modal from "./Modal";
 import EditClassTaskForm from "../forms/EditClassTaskForm";
 import DeleteClassTaskModal from "../modals/DeleteClassTaskModal";
+import Preloader from "../preloaders/Preloader";
 
 function UnenrollModal({ open, setUnenrollModalOpen, enrollmentId, setEnrolleeList }) {
     const [loading, setLoading] = useState(false);
@@ -76,6 +77,7 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
     const [enrollees, setEnrollees] = useState([]);
 
     const fetchEnrollees = async () => {
+        setLoading(true)
         try {
             const response = await api.get(`/class/${classCourseId}`);
             if (response.data.success) {
@@ -96,9 +98,7 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
     }, [classCourseId, reloadKey]);
 
     if (loading) return (
-        <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl scrollbar-none">
-            Loading Enrollees...
-        </div>
+        <Preloader text="Loading enrollees"/>
     );
 
     return (
@@ -308,6 +308,7 @@ export function ClassAttendance({ role = '', date = "" }) {
     }
 
     const fetchAttendance = async (selectedSessionDate = sessionDate) => {
+        setLoading(true)
         try {
             const response = await api.get(`/class/${classCourseId}/attendance/${selectedSessionDate}`);
             if (response.data.success) {
@@ -385,9 +386,7 @@ export function ClassAttendance({ role = '', date = "" }) {
     if (error) return <ErrorRoute code={error} />;
 
     if (loading) return (
-        <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl gap-2">
-            Loading attendance records...
-        </div>
+        <Preloader text="Loading attendance records"/>
     );
 
     return (
@@ -549,6 +548,7 @@ export function ClassTask({ role = '', reloadKey }) {
     const [selectedTask, setSelectedTask] = useState();
 
     const fetchTasks = async () => {
+        setLoading(true)
         try {
             const response = await api.get(`/class/${classCourseId}/tasks`);
             console.log(response.data)
@@ -582,9 +582,7 @@ export function ClassTask({ role = '', reloadKey }) {
     }, [classCourseId, reloadKey])
 
     if (loading) return (
-        <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl gap-2">
-            Loading tasks...
-        </div>
+        <Preloader text="Loading Tasks"/>
     );
 
     if (error) return <ErrorRoute code={error} />;
@@ -835,6 +833,7 @@ export function ClassAnnouncement({ role = '' }) {
     const [announcements, setAnnouncements] = useState({});
 
     const fetchAnnouncements = async () => {
+        setLoading(true)
         try {
             const response = await api.get(`/class/${classCourseId}/announcements`);
             if (response.data.success) {
@@ -855,9 +854,7 @@ export function ClassAnnouncement({ role = '' }) {
     }, [classCourseId])
 
     if (loading) return (
-        <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl gap-2">
-            Loading class announcements...
-        </div>
+        <Preloader text="Loading class announcements"/>
     );
 
     if (error) return <ErrorRoute code={error} />;

@@ -52,10 +52,10 @@ const About = () => {
                 and convenience.
               </p>
             </div>
-            <button className="mt-8 text-violet-600 font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all">
+            {/* <button className="mt-8 text-violet-600 font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all">
               Read Full Story
               <ArrowRight size={16} />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

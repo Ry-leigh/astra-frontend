@@ -6,6 +6,7 @@ import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/Indeterminate
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import Preloader from "@/components/preloaders/Preloader";
 dayjs.extend(relativeTime);
 
 export function NotificationList() {
@@ -32,9 +33,7 @@ export function NotificationList() {
     }, []);
 
     if (loading) return (
-        <div className="flex flex-col bg-white p-4 gap-">
-            Loading Notifications...
-        </div>
+    <Preloader text="Loading notifications"/>
     )
 
     return (

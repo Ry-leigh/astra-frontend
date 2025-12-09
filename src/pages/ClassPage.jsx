@@ -12,6 +12,7 @@ import { ClassIndex, ClassAttendance, ClassTask, ClassAnnouncement } from "@/com
 import Modal from "@/components/elements/Modal";
 import EnrollStudentForm from "@/components/forms/EnrollStudentForm";
 import CreateClassTaskForm from "@/components/forms/CreateClassTaskForm";
+import Preloader from "@/components/preloaders/Preloader";
 
 function Header({ course = { name: '' }, instructor = { first_name: '', last_name: '', sex: '' }, role = '', activeTab = 'students', handleTabChange = () => {}, children }) {
     const neutral = "flex gap-3 items-center mx-2 py-4 px-6 pt-7";
@@ -106,9 +107,7 @@ export default function ClassPage() {
 
     if (loading) return (
         <div className="flex flex-col w-full gap-4 items-end">
-            <Header />
-            <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl scrollbar-none">
-            </div>
+            <Preloader text="Loading class"/>
         </div>
     );
 

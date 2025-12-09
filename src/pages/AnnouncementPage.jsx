@@ -17,6 +17,7 @@ import CreateAnnouncementForm from "@/components/forms/CreateAnnouncementForm";
 import Modal from "@/components/elements/Modal";
 import EditAnnouncementForm from "@/components/forms/EditAnnouncementForm";
 import DeleteAnnouncementModal from "@/components/modals/DeleteAnnouncementModal";
+import Preloader from "@/components/preloaders/Preloader";
 
 function Navigation({ activeTab, handleTabChange, role, children }) {
   const neutral = "flex gap-3 items-center p-4 pt-7 px-6 text-base";
@@ -117,7 +118,7 @@ export default function AnnouncementPage() {
 function AllAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
     useEffect(() => { fetchAnnouncements(); }, []);
 
-    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (loading) return <Preloader text="Loading announcements"/>;
     if (error) return <ErrorRoute code={error} />;
 
     const today = new Date();
@@ -143,7 +144,7 @@ function AllAnnouncements({ loading, error, role, announcements, targetCatalog, 
 function GeneralAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
     useEffect(() => { fetchAnnouncements(); }, []);
 
-    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (loading) return <Preloader text="Loading announcements"/>;
     if (error) return <ErrorRoute code={error} />;
 
     // Filter: global only (visible to everyone)
@@ -165,7 +166,7 @@ function GeneralAnnouncements({ loading, error, role, announcements, targetCatal
 function ProgramAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
     useEffect(() => { fetchAnnouncements(); }, []);
 
-    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (loading) return <Preloader text="Loading announcements"/>;
     if (error) return <ErrorRoute code={error} />;
 
     // Filter: any target that is a program
@@ -187,7 +188,7 @@ function ProgramAnnouncements({ loading, error, role, announcements, targetCatal
 function ClassAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
     useEffect(() => { fetchAnnouncements(); }, []);
 
-    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (loading) return <Preloader text="Loading announcements"/>;
     if (error) return <ErrorRoute code={error} />;
 
     // Filter: target_type === "class_course"
@@ -209,7 +210,7 @@ function ClassAnnouncements({ loading, error, role, announcements, targetCatalog
 function PastAnnouncements({ loading, error, role, announcements, targetCatalog, fetchAnnouncements }) {
     useEffect(() => { fetchAnnouncements(); }, []);
 
-    if (loading) return <div className="p-4">Loading announcements...</div>;
+    if (loading) return <Preloader text="Loading announcements"/>;
     if (error) return <ErrorRoute code={error} />;
 
     const today = new Date();

@@ -7,6 +7,7 @@ import PageHeader from "@/components/elements/PageHeader";
 import TextInput from "@/components/elements/TextInput";
 import { FloatingLabelDropdown } from "@/components/elements/Dropdown";
 import ErrorRoute from "@/router/ErrorRoute";
+import Preloader from "@/components/preloaders/Preloader";
 
 function capitalizeWords(str) {
   return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
@@ -202,10 +203,7 @@ export default function EditUserPage() {
 
   if (loading)
     return (
-      <>
-        <PageHeader title="Edit User" />
-        <div className="flex flex-col h-full bg-white rounded-xl p-6 pt-8 gap-6" />
-      </>
+      <Preloader text="Fetching user records"/>
     );
 
   if (error) return <ErrorRoute code={error} />;

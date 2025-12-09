@@ -1,7 +1,6 @@
 import api from "../api/axios"
 import { useEffect, useState } from "react";
 import ClassroomCard from "@/components/elements/ClassroomCard";
-import ClassroomPreloader from "@/components/preloaders/ClassroomPreloader";
 import ErrorRoute from "@/router/ErrorRoute";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "@/components/elements/PageHeader";
@@ -11,6 +10,7 @@ import Modal from "@/components/elements/Modal";
 import CreateClassroomForm from "@/components/forms/CreateClassroomForm";
 import EditClassroomForm from "@/components/forms/EditClassroomForm";
 import DeleteClassroomModal from "@/components/modals/DeleteClassroomModal";
+import Preloader from "@/components/preloaders/Preloader";
 
 export default function ClassroomPage() {
     const navigate = useNavigate();
@@ -28,6 +28,7 @@ export default function ClassroomPage() {
     const [selectedClassroom, setSelectedClassroom] = useState(null);
 
     const fetchClassrooms = async () => {
+        setLoading(true)
         try {
             const response = await api.get(`/classrooms/${id}`);
             console.log(response.data);
@@ -58,7 +59,7 @@ export default function ClassroomPage() {
 
     if (loading) return (
         <>
-            <ClassroomPreloader />
+            <Preloader text="Loading classrooms"/>
         </>
     );
 

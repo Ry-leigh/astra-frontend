@@ -20,7 +20,7 @@ const Hero = () => {
         <div className="fade-up">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 tracking-tight mb-6">
             Smart attendance. <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-600 to-fuchsia-500">
               Smarter classrooms.
             </span>
           </h1>
@@ -41,7 +41,7 @@ const Hero = () => {
 
         {/* Dashboard Mockup */}
         <div className="relative max-w-5xl mx-auto fade-up delay-200">
-          <div className="absolute -inset-1 bg-gradient-to-r from-violet-400 to-fuchsia-400 rounded-2xl blur opacity-30"></div>
+          <div className="absolute -inset-1 bg-linear-to-r from-violet-400 to-fuchsia-400 rounded-2xl blur opacity-30"></div>
           <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200/60">
             {/* Browser Bar */}
             <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 flex items-center gap-2">
@@ -58,21 +58,21 @@ const Hero = () => {
             </div>
 
             {/* App Content Placeholder Image */}
-            <div className="aspect-[16/9] bg-slate-50 relative">
+            <div className="aspect-video bg-slate-50 relative">
               <img
                 src="https://picsum.photos/seed/astra_dashboard/1200/675"
                 alt="Astra Dashboard Interface"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent pointer-events-none"></div>
+              <div className="absolute inset-0 bg-linear-to-t from-white/10 to-transparent pointer-events-none"></div>
             </div>
           </div>
 
           <div className="mt-8 flex justify-center">
-            <button className="flex items-center gap-2 text-violet-600 font-semibold hover:text-violet-700 transition-colors">
+            {/* <button className="flex items-center gap-2 text-violet-600 font-semibold hover:text-violet-700 transition-colors">
               <PlayCircle className="w-5 h-5" />
               Watch Demo
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

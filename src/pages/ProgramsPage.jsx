@@ -13,6 +13,7 @@ import Modal from "@/components/elements/Modal";
 import CreateProgramForm from "@/components/forms/CreateProgramForm";
 import EditProgramForm from "@/components/forms/EditProgramForm";
 import DeleteProgramModal from "@/components/modals/DeleteProgramModal";
+import Preloader from "@/components/preloaders/Preloader";
 
 export default function ProgramsPage() {
     const [programs, setPrograms] = useState([]);
@@ -45,9 +46,7 @@ export default function ProgramsPage() {
     }, []);
 
     if (loading) return (
-        <>
-            <ProgramPreloader />
-        </>
+        <Preloader text="Loading programs"/>
     );
 
     if (error) return <ErrorRoute code={error} />;

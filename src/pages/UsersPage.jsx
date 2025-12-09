@@ -40,12 +40,7 @@ export default function UsersPage() {
     }, [])
 
     if (loading) return (
-        <>
-        <div className="flex flex-col w-full gap-4">
-            <Preloader/>
-        </div>
-            
-        </>
+        <Preloader text="Loading users"/>
     );
 
     if (error) return <ErrorRoute code={error} />;

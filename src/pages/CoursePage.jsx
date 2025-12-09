@@ -4,7 +4,6 @@ import api from "../api/axios";
 
 import ErrorRoute from "@/router/ErrorRoute";
 import CourseCard from "@/components/elements/CourseCard";
-import CoursePreloader from "@/components/preloaders/CoursePreloader";
 import PageHeader from "@/components/elements/PageHeader";
 import { Dropdown } from "@/components/elements/Dropdown";
 
@@ -13,6 +12,7 @@ import Modal from "@/components/elements/Modal";
 import AddCourseForm from "@/components/forms/AddCourseForm";
 import EditClassCourseForm from "@/components/forms/EditClassCourseForm";
 import DeleteClassCourseModal from "@/components/modals/DeleteClassCourseModal";
+import Preloader from "@/components/preloaders/Preloader";
 
 function toOrdinal(n) {
   const s = ["th", "st", "nd", "rd"];
@@ -80,7 +80,7 @@ export default function CoursePage() {
 
   if (loading) return (
     <>
-      <CoursePreloader />
+      <Preloader text="Loading courses"/>
     </>
   );
 

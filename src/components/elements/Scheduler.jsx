@@ -1,5 +1,6 @@
 import api from "@/api/axios";
 import { useEffect, useState, Fragment } from "react";
+import Preloader from "../preloaders/Preloader";
 
 export default function Scheduler() {
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ export default function Scheduler() {
   };
 
   const fetchSchedules = async () => {
+    setLoading(true)
     try {
       setLoading(true);
       const res = await api.get("/schedule");
@@ -49,6 +51,10 @@ export default function Scheduler() {
       span: Math.max(1, end - start)
     };
   });
+
+  if (loading) {
+    <Preloader text="Loading schedules"/>
+  }
 
   return (
     <div className="flex flex-col border rounded-md p-4 border-gray-200 h-fit overflow-hidden">

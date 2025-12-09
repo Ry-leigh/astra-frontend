@@ -8,6 +8,7 @@ import ErrorRoute from "@/router/ErrorRoute";
 import CourseCard from "@/components/elements/CourseCard";
 import PageHeader from "@/components/elements/PageHeader";
 import { Dropdown } from "@/components/elements/Dropdown";
+import Preloader from "@/components/preloaders/Preloader";
 
 function toOrdinal(n) {
   const s = ["th", "st", "nd", "rd"];
@@ -62,9 +63,7 @@ export default function ClassesPage() {
   }, []);
 
   if (loading) return (
-    <>
-    {(role == 'Administrator' || role == 'Insrtuctor') ? "Loading Classes..." : "Loading Courses..."}
-    </>
+    <Preloader text={(role == 'Administrator' || role == 'Insrtuctor') ? "Loading Classes..." : "Loading Courses..."}></Preloader>
   );
 
   if (error) return <ErrorRoute code={error} />;

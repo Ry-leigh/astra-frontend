@@ -15,6 +15,7 @@ import PageHeader from "@/components/elements/PageHeader";
 import Calendar from "@/components/elements/Calendar";
 import Scheduler from "@/components/elements/Scheduler";
 import CreateCalendarEventForm from "@/components/forms/CreateCalendarEventForm";
+import Preloader from "@/components/preloaders/Preloader";
 
 function Navigation({ activeTab, handleTabChange, children }) {
   const neutral = "flex gap-3 items-center p-4 pt-7 px-6";
@@ -49,6 +50,7 @@ export default function CalendarPage() {
 
   // Fetch events function moved to CalendarPage
   const fetchEvents = async () => {
+    setLoading(true)
     try {
       setRole(user.roles[0].name);
       const response = await api.get("/calendars");

@@ -17,6 +17,8 @@ import timeConverter from './timeConverter';
 import Modal from './Modal';
 import ViewEventModal from '../modals/ViewEventModal';
 import EditCalendarEventForm from '../forms/EditCalendarEventForm';
+import DeleteCalendarEventModal from '../modals/DeleteCalendarEventModal';
+import Preloader from '../preloaders/Preloader';
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -85,7 +87,9 @@ export default function Calendar({ fetchEvents, events, loading }) {
             </div>
 
             {loading ? (
-                <div className="h-full">Loading events...</div>
+                <div className='flex h-112'>
+                    <Preloader text='Loading events'/>
+                </div>
             ) : (
                 <>
                     {activeTab === "month" && <MonthView fetchEvents={fetchEvents} weeks={weeks} events={events} currentMonth={currentMonth} />}
@@ -400,6 +404,7 @@ function WeekRow({ fetchEvents, week, events, month }) {
             <Modal open={openEditModal} onClose={() => setOpenEditModal(false)} title={`Edit ${selectedEvent?.title}`}>
                 <EditCalendarEventForm event={selectedEvent} onSuccess={fetchEvents} onClose={() => setOpenEditModal(false)} />
             </Modal>
+            <DeleteCalendarEventModal open={openDeleteModal} onClose={() => setOpenDeleteModal(false)} event={selectedEvent} onDeleted={fetchEvents}/>
         </div>
     );
 }
