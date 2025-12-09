@@ -227,7 +227,7 @@ const calculateDuration = (start, end) => {
 
 const ScheduleTimeline = ({ scheduleData, role }) => {
   return (
-    <div className={`bg-white h-full rounded-lg p-6 flex flex-col ${role == 'Administrator' ? "" : "mb-4"}`}>
+    <div className={`bg-white h-full rounded-lg p-6 flex flex-col ${role == 'Administrator' || role == 'Instructor' ? "" : "mb-4"}`}>
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h2 className="text-lg font-bold text-gray-900">Today's Schedule</h2>

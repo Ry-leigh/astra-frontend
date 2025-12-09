@@ -1,5 +1,6 @@
 import React from "react"
 import { ArrowRight, PlayCircle } from "lucide-react"
+import ss from "@/assets/ss.png"
 
 const Hero = () => {
   return (
@@ -58,9 +59,9 @@ const Hero = () => {
             </div>
 
             {/* App Content Placeholder Image */}
-            <div className="aspect-video bg-slate-50 relative">
+            <div className="aspect-auto bg-slate-50 relative">
               <img
-                src="https://picsum.photos/seed/astra_dashboard/1200/675"
+                src={ss}
                 alt="Astra Dashboard Interface"
                 className="w-full h-full object-cover"
               />
