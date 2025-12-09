@@ -78,7 +78,7 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
     const fetchEnrollees = async () => {
         try {
             const response = await api.get(`/class/${classCourseId}`);
-            if(response.data.success){
+            if (response.data.success) {
                 setEnrollees(response.data.class.enrollments)
             } else {
                 throw new Error("Failed to load class");
@@ -95,10 +95,10 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
         fetchEnrollees();
     }, [classCourseId, reloadKey]);
 
-        if (loading) return (
-            <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl scrollbar-none">
-                Loading Enrollees...
-            </div>
+    if (loading) return (
+        <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl scrollbar-none">
+            Loading Enrollees...
+        </div>
     );
 
     return (
@@ -118,21 +118,21 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
                 <tbody className="divide-y divide-gray-100 bg-white">
                     {enrollees.length > 0 ? (
                         enrollees.map((enrollee) => (
-                        <tr key={enrollee.id} className="hover:bg-zinc-50 transition">
-                            <td className="px-4 py-3 text-gray-900">
-                                {enrollee.student.user.last_name}, {enrollee.student.user.first_name}
-                            </td>
-                            <td className="px-4 py-3 text-gray-700">{enrollee.student.user.email}</td>
-                            <td className="px-4 py-3 text-gray-700">{enrollee.student.user.roles[0].name}</td>
-                            {(role === 'Administrator' || role === 'Instructor') && (
-                                <td className="px-4 py-3 text-center space-x-3">
-                                    {(role === 'Administrator') && ( <EditButton size="small"/> )}
-                                    <button className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition text-xl" onClick={() => {setSelectedEnrollmentId(enrollee.id); setUnenrollModalOpen(true);}}>
-                                        <IndeterminateCheckBoxOutlinedIcon fontSize="inherit"/>
-                                    </button>
+                            <tr key={enrollee.id} className="hover:bg-zinc-50 transition">
+                                <td className="px-4 py-3 text-gray-900">
+                                    {enrollee.student.user.last_name}, {enrollee.student.user.first_name}
                                 </td>
-                            )}
-                        </tr>
+                                <td className="px-4 py-3 text-gray-700">{enrollee.student.user.email}</td>
+                                <td className="px-4 py-3 text-gray-700">{enrollee.student.user.roles[0].name}</td>
+                                {(role === 'Administrator' || role === 'Instructor') && (
+                                    <td className="px-4 py-3 text-center space-x-3">
+                                        {(role === 'Administrator') && (<EditButton size="small" />)}
+                                        <button className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition text-xl" onClick={() => { setSelectedEnrollmentId(enrollee.id); setUnenrollModalOpen(true); }}>
+                                            <IndeterminateCheckBoxOutlinedIcon fontSize="inherit" />
+                                        </button>
+                                    </td>
+                                )}
+                            </tr>
                         ))
                     ) : (
                         <tr>
@@ -143,16 +143,16 @@ export function ClassIndex({ classCourseId, role, reloadKey }) {
                     )}
                 </tbody>
             </table>
-            <UnenrollModal open={unenrollModalOpen} setUnenrollModalOpen={setUnenrollModalOpen} enrollmentId={selectedEnrollmentId} setEnrolleeList={setEnrollees}/>
+            <UnenrollModal open={unenrollModalOpen} setUnenrollModalOpen={setUnenrollModalOpen} enrollmentId={selectedEnrollmentId} setEnrolleeList={setEnrollees} />
         </div>
     )
 }
 
-export function ClassAttendance({ role = '', date = ""}) {
+export function ClassAttendance({ role = '', date = "" }) {
     const { classCourseId } = useParams();
     const [sessionDate, setSessionDate] = useState('')
-    const [session, setSession] =useState({});
-    const [attendanceRecords, setAttendanceRecords] =useState([]);
+    const [session, setSession] = useState({});
+    const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [editTimeIn, setEditTimeIn] = useState(false);
@@ -161,7 +161,7 @@ export function ClassAttendance({ role = '', date = ""}) {
     const [timeOut, setTimeOut] = useState(null);
     const [time, setTime] = useState(dayjs().format("hh:mm"))
 
-    const handleRecordAttendance = async ({ classCourseId, id, status, time_in = null, remarks = null}) => {
+    const handleRecordAttendance = async ({ classCourseId, id, status, time_in = null, remarks = null }) => {
         try {
             const response = await api.patch(`/class/${classCourseId}/attendance/${id}`, {
                 status, time_in, remarks
@@ -175,8 +175,9 @@ export function ClassAttendance({ role = '', date = ""}) {
         }
     }
 
-    function AttendanceOptions ({ classId, attendanceId, status, setAttendanceRecords }) {
+    function AttendanceOptions({ classId, attendanceId, status, setAttendanceRecords }) {
         const [open, setOpen] = useState(false);
+        const [dropUp, setDropUp] = useState(false); // ⬅️ NEW
         const [saving, setSaving] = useState(false);
         const [saved, setSaved] = useState(false);
         const popoverRef = useRef(null);
@@ -184,7 +185,11 @@ export function ClassAttendance({ role = '', date = ""}) {
 
         useEffect(() => {
             function handleClickOutside(e) {
-                if (popoverRef.current && !popoverRef.current.contains(e.target) && !buttonRef.current.contains(e.target)) {
+                if (
+                    popoverRef.current &&
+                    !popoverRef.current.contains(e.target) &&
+                    !buttonRef.current.contains(e.target)
+                ) {
                     setOpen(false);
                 }
             }
@@ -196,10 +201,24 @@ export function ClassAttendance({ role = '', date = ""}) {
             return () => document.removeEventListener("mousedown", handleClickOutside);
         }, [open]);
 
+        useEffect(() => {
+            if (open && buttonRef.current && popoverRef.current) {
+                const buttonRect = buttonRef.current.getBoundingClientRect();
+                const dropdownHeight = popoverRef.current.offsetHeight;
+                const spaceBelow = window.innerHeight - buttonRect.bottom;
+
+                if (spaceBelow < dropdownHeight + 10) {
+                    setDropUp(true);
+                } else {
+                    setDropUp(false);
+                }
+            }
+        }, [open]);
+
         const handleSelect = async (newStatus) => {
             setOpen(false);
             setSaving(true);
-            
+
             await handleRecordAttendance({
                 classCourseId: classId,
                 id: attendanceId,
@@ -219,40 +238,45 @@ export function ClassAttendance({ role = '', date = ""}) {
             setTimeout(() => setSaved(false), 1000);
         }
 
-            let bg
-            
-            switch (status) {
-                case 'present':
-                    bg = "bg-green-100";
-                    break;
-                case 'late':
-                    bg = "bg-orange-100";
-                    break;
-                case 'absent':
-                    bg = "bg-red-100";
-                    break;
-                case 'excused':
-                    bg = "bg-blue-100";
-                    break;
-                case 'suspended':
-                    bg = "bg-black text-white";
-                    break;
-                default:
-                    bg = "bg-white"
-                    break;
-            }
+        let bg
+
+        switch (status) {
+            case 'present':
+                bg = "bg-green-100";
+                break;
+            case 'late':
+                bg = "bg-orange-100";
+                break;
+            case 'absent':
+                bg = "bg-red-100";
+                break;
+            case 'excused':
+                bg = "bg-blue-100";
+                break;
+            case 'suspended':
+                bg = "bg-black text-white";
+                break;
+            default:
+                bg = "bg-white"
+                break;
+        }
 
         return (
             <div className="relative w-1/3">
-                <button disabled={role == "Student"} ref={buttonRef} onClick={() => setOpen(!open)} className={`flex items-center py-1 px-2 justify-between gap-1 w-full border border-gray-200 rounded-md ${bg}`}>
+                <button
+                    disabled={role === "Student"}
+                    ref={buttonRef}
+                    onClick={() => setOpen(!open)}
+                    className={`flex items-center py-1 px-2 justify-between gap-1 w-full border border-gray-200 rounded-md ${bg}`}
+                >
                     <span className="capitalize">{status}</span>
 
                     {open ? (
                         <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><KeyboardArrowUpIcon /></div>
                     ) : saving ? (
-                        <div className={`w-1/5 m-[0.18rem] aspect-square border-3 border-l-transparent ${status == "suspended" ? "border-white" : "border-zinc-800/40"} rounded-full animate-spin`}/>
+                        <div className={`w-1/5 m-[0.18rem] aspect-square border-3 border-l-transparent ${status == "suspended" ? "border-white" : "border-zinc-800/40"} rounded-full animate-spin`} />
                     ) : saved ? (
-                        <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><CheckOutlinedRoundedIcon/></div>
+                        <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><CheckOutlinedRoundedIcon /></div>
                     ) : role == "Student" ? null : (
                         <div className={`${status == "suspended" ? "text-white" : "text-zinc-800/40"}`}><KeyboardArrowDownIcon /></div>
                     )}
@@ -261,9 +285,19 @@ export function ClassAttendance({ role = '', date = ""}) {
 
                 {/* Dropdown */}
                 {open && (
-                    <div ref={popoverRef} className="absolute left-0 top-full w-full bg-white shadow rounded-md z-10">
+                    <div
+                        ref={popoverRef}
+                        className={`
+                        absolute left-0 w-full bg-white shadow rounded-md z-10
+                        ${dropUp ? "bottom-full mb-1" : "top-full mt-1"}   // ⬅️ NEW
+                    `}
+                    >
                         {["present", "late", "absent", "excused", "suspended"].map((s) => (
-                            <div key={s} onClick={() => handleSelect(s)} className="p-2 text-center hover:bg-gray-100 cursor-pointer capitalize">
+                            <div
+                                key={s}
+                                onClick={() => handleSelect(s)}
+                                className="p-2 text-center hover:bg-gray-100 cursor-pointer capitalize"
+                            >
                                 {s}
                             </div>
                         ))}
@@ -273,10 +307,10 @@ export function ClassAttendance({ role = '', date = ""}) {
         )
     }
 
-    const fetchAttendance = async ( selectedSessionDate = sessionDate ) => {
+    const fetchAttendance = async (selectedSessionDate = sessionDate) => {
         try {
             const response = await api.get(`/class/${classCourseId}/attendance/${selectedSessionDate}`);
-            if(response.data.success){
+            if (response.data.success) {
                 console.log(response.data);
                 setSession(response.data.session)
                 setAttendanceRecords(response.data.attendance_records)
@@ -293,13 +327,13 @@ export function ClassAttendance({ role = '', date = ""}) {
 
     useEffect(() => {
         fetchAttendance();
-    },[classCourseId, date])
+    }, [classCourseId, date])
 
     const handlePreviousSessionRequest = async (date = `${session?.session_date}`) => {
         setLoading(true);
         try {
             const response = await api.get(`/class/${classCourseId}/attendance/${date}/previous`);
-            if(response.data.success){
+            if (response.data.success) {
                 console.log(response.data);
                 setSession(response.data.session)
                 setAttendanceRecords(response.data.attendance_records)
@@ -318,7 +352,7 @@ export function ClassAttendance({ role = '', date = ""}) {
         setLoading(true);
         try {
             const response = await api.get(`/class/${classCourseId}/attendance/${date}/next`);
-            if(response.data.success){
+            if (response.data.success) {
                 setSession(response.data.session)
                 setAttendanceRecords(response.data.attendance_records)
             } else {
@@ -332,7 +366,7 @@ export function ClassAttendance({ role = '', date = ""}) {
         }
     }
 
-    const handleUpdateTimeIn = async ( selectedDate ) => {
+    const handleUpdateTimeIn = async (selectedDate) => {
         await api.put(`/class/${classCourseId}/attendance/${session?.id}`, {
             time_in: timeIn,
         });
@@ -340,7 +374,7 @@ export function ClassAttendance({ role = '', date = ""}) {
         fetchAttendance(selectedDate);
     };
 
-    const handleUpdateTimeOut = async ( selectedDate ) => {
+    const handleUpdateTimeOut = async (selectedDate) => {
         await api.put(`/class/${classCourseId}/attendance/${session?.id}`, {
             time_out: timeOut,
         });
@@ -363,94 +397,94 @@ export function ClassAttendance({ role = '', date = ""}) {
                     <button className="cursor-pointer" onClick={() => handlePreviousSessionRequest(session?.session_date)}>
                         <KeyboardArrowLeftOutlinedIcon />
                     </button>
-                    <p className="flex text-lg font-medium text-nowrap">{session?.session_date? dayjs(session.session_date).format("MMM D") : ''}</p>
+                    <p className="flex text-lg font-medium text-nowrap">{session?.session_date ? dayjs(session.session_date).format("MMM D") : ''}</p>
                     <button className="cursor-pointer" onClick={() => handleNextSessionRequest(session.session_date)}>
                         <KeyboardArrowRightOutlinedIcon />
                     </button>
-                    <p className="text-base">{session?.class_schedule?.day_of_week || dayjs(session?.session_date).format("dddd") || '--'} | {session?.class_schedule?.start_time? dayjs(session.class_schedule.start_time, "HH:mm:ss").format("h:mm") : session?.calendar_schedule?.start_time? dayjs(session.calendar_schedule.start_time, "HH:mm:ss").format("h:mm") : '--'} – {session?.class_schedule?.end_time ? dayjs(session.class_schedule.end_time, "HH:mm:ss").format("h:mm") : session?.calendar_schedule?.end_time ? dayjs(session.calendar_schedule.end_time, "HH:mm:ss").format("h:mm") : '--'}</p>
+                    <p className="text-base">{session?.class_schedule?.day_of_week || dayjs(session?.session_date).format("dddd") || '--'} | {session?.class_schedule?.start_time ? dayjs(session.class_schedule.start_time, "HH:mm:ss").format("h:mm") : session?.calendar_schedule?.start_time ? dayjs(session.calendar_schedule.start_time, "HH:mm:ss").format("h:mm") : '--'} – {session?.class_schedule?.end_time ? dayjs(session.class_schedule.end_time, "HH:mm:ss").format("h:mm") : session?.calendar_schedule?.end_time ? dayjs(session.calendar_schedule.end_time, "HH:mm:ss").format("h:mm") : '--'}</p>
                 </div>
                 <div className="flex gap-4 px-2 text-base">
-                {((role != 'Student') && (
-                    <div className="flex gap-3 items-center">
-                        <p className="font-medium">Time in:</p>
-                        {editTimeIn ? (
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="time"
-                                value={session?.time_in ? session.time_in : timeIn}
-                                onChange={(e) => setTimeIn(e.target.value)}
-                                className="border border-gray-300 rounded-lg p-1"
-                            />
+                    {((role != 'Student') && (
+                        <div className="flex gap-3 items-center">
+                            <p className="font-medium">Time in:</p>
+                            {editTimeIn ? (
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="time"
+                                        value={session?.time_in ? session.time_in : timeIn}
+                                        onChange={(e) => setTimeIn(e.target.value)}
+                                        className="border border-gray-300 rounded-lg p-1"
+                                    />
 
-                            <button
-                            onClick={() => handleUpdateTimeIn(session.session_date)}
-                            className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
-                            >
-                            <CheckRoundedIcon fontSize="inherit" />
-                            </button>
+                                    <button
+                                        onClick={() => handleUpdateTimeIn(session.session_date)}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                    >
+                                        <CheckRoundedIcon fontSize="inherit" />
+                                    </button>
 
-                            <button
-                            onClick={() => setEditTimeIn(false)}
-                            className="inline-flex items-center justify-center rounded-md p-2 text-red-600 bg-red-50 hover:bg-red-100 transition"
-                            >
-                            <CloseRoundedIcon fontSize="inherit" />
-                            </button>
-                        </div>
-                        ) : (
-                        <div className="flex items-center gap-2">
-                            <div className="font-light ">{session?.time_in ? dayjs(session?.time_in, "HH:mm").format("hh:mm A") : "--:--"}</div>
-                            <button
-                            onClick={() => {setEditTimeIn(true); session?.time_in ? null : setTimeIn(dayjs().format("hh:mm"))}}
-                            className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
-                            >
-                            <EditRoundedIcon fontSize="inherit" />
-                            </button>
-                        </div>
-                        )}
-                        <p className="font-medium">Time out:</p>
-                        {editTimeOut ? (
-                            <div className="flex items-center gap-2">
-                                <input
-                                type="time"
-                                value={session?.time_out ? session.time_out : timeOut}
-                                onChange={(e) => setTimeOut(e.target.value)}
-                                className="border border-gray-300 rounded-lg p-1"
-                                />
-
-                                <button
-                                onClick={() => handleUpdateTimeOut(session.session_date)}
-                                className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
-                                >
-                                <CheckRoundedIcon fontSize="inherit" />
-                                </button>
-
-                                <button
-                                onClick={() => setEditTimeOut(false)}
-                                className="inline-flex items-center justify-center rounded-md p-2 text-red-600 bg-red-50 hover:bg-red-100 transition"
-                                >
-                                <CloseRoundedIcon fontSize="inherit" />
-                                </button>
-                            </div>
+                                    <button
+                                        onClick={() => setEditTimeIn(false)}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-red-600 bg-red-50 hover:bg-red-100 transition"
+                                    >
+                                        <CloseRoundedIcon fontSize="inherit" />
+                                    </button>
+                                </div>
                             ) : (
-                            <div className="flex items-center gap-2">
-                                <div className="font-light">{session?.time_out ? dayjs(session?.time_out, "HH:mm").format("hh:mm A") : "--:--"}</div>
-                                <button
-                                onClick={() => {setEditTimeOut(true); session?.time_out ? null : setTimeOut(dayjs().format("hh:mm"))}}
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
-                                >
-                                <EditRoundedIcon fontSize="inherit" />
-                                </button>
-                            </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="font-light ">{session?.time_in ? dayjs(session?.time_in, "HH:mm").format("hh:mm A") : "--:--"}</div>
+                                    <button
+                                        onClick={() => { setEditTimeIn(true); session?.time_in ? null : setTimeIn(dayjs().format("hh:mm")) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
+                                    >
+                                        <EditRoundedIcon fontSize="inherit" />
+                                    </button>
+                                </div>
                             )}
-                    </div>
-                ))}
+                            <p className="font-medium">Time out:</p>
+                            {editTimeOut ? (
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="time"
+                                        value={session?.time_out ? session.time_out : timeOut}
+                                        onChange={(e) => setTimeOut(e.target.value)}
+                                        className="border border-gray-300 rounded-lg p-1"
+                                    />
+
+                                    <button
+                                        onClick={() => handleUpdateTimeOut(session.session_date)}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                    >
+                                        <CheckRoundedIcon fontSize="inherit" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => setEditTimeOut(false)}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-red-600 bg-red-50 hover:bg-red-100 transition"
+                                    >
+                                        <CloseRoundedIcon fontSize="inherit" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <div className="font-light">{session?.time_out ? dayjs(session?.time_out, "HH:mm").format("hh:mm A") : "--:--"}</div>
+                                    <button
+                                        onClick={() => { setEditTimeOut(true); session?.time_out ? null : setTimeOut(dayjs().format("hh:mm")) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition"
+                                    >
+                                        <EditRoundedIcon fontSize="inherit" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
-            </div>
-            
-            
+
+
 
             {/* <div className="flex flex-nowrap mt-4 px-2 items-center gap-2 text-sm">Mark selected as: <PrimaryButtonOutlined>Present</PrimaryButtonOutlined></div> */}
-            
+
             <div className="flex overflow-y-auto scrollbar-none mx-2">
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
                     <thead className="sticky top-0 bg-white z-2">
@@ -464,20 +498,36 @@ export function ClassAttendance({ role = '', date = ""}) {
                     <tbody className="divide-y divide-gray-100 bg-white">
                         {attendanceRecords?.length > 0 ? (
                             attendanceRecords.map((enrollee) => (
-                            <tr key={enrollee.id} className="hover:bg-zinc-50 transition">
-                                <td className="px-4 py-3 text-gray-900">
-                                    {enrollee.student.user.last_name}, {enrollee.student.user.first_name}
-                                </td>
-                                <td className="px-4 py-3 text-gray-700">
-                                    <AttendanceOptions classId={classCourseId} attendanceId={enrollee.id} status={enrollee?.status} setAttendanceRecords={setAttendanceRecords}/>
-                                </td>
-                                <td className="px-4 py-3 text-gray-700">{enrollee.remarks || "..."}</td>
-                            </tr>
+                                <tr key={enrollee.id} className="hover:bg-zinc-50 transition">
+                                    <td className="px-4 py-3 text-gray-900">
+                                        {enrollee.student.user.last_name}, {enrollee.student.user.first_name}
+                                    </td>
+                                    <td className="px-4 py-3 text-gray-700">
+                                        <AttendanceOptions classId={classCourseId} attendanceId={enrollee.id} status={enrollee?.status} setAttendanceRecords={setAttendanceRecords} />
+                                    </td>
+                                    <td className="px-4 py-3 text-gray-700">{enrollee.remarks || "..."}</td>
+                                </tr>
                             ))
                         ) : (
                             <tr>
                                 <td colSpan="4" className="px-4 py-6 text-center text-gray-500 italic">
-                                    No enrollees found.
+                                    <input
+                                        type="text"
+                                        className="w-full bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring focus:ring-blue-300"
+                                        value={enrollee.remarks || ""}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+
+                                            setAttendanceRecords(prev =>
+                                                prev.map(r =>
+                                                    r.id === enrollee.id ? { ...r, remarks: newValue } : r
+                                                )
+                                            );
+
+                                            // optional: call API to save immediately
+                                            // updateAttendanceRemark(enrollee.id, newValue);
+                                        }}
+                                    />
                                 </td>
                             </tr>
                         )}
@@ -502,7 +552,7 @@ export function ClassTask({ role = '', reloadKey }) {
         try {
             const response = await api.get(`/class/${classCourseId}/tasks`);
             console.log(response.data)
-            if(response.data.success){
+            if (response.data.success) {
                 setTasks(response.data.tasks);
             } else {
                 throw new Error("Failed to load tasks");
@@ -529,7 +579,7 @@ export function ClassTask({ role = '', reloadKey }) {
 
     useEffect(() => {
         fetchTasks();
-    },[classCourseId, reloadKey])
+    }, [classCourseId, reloadKey])
 
     if (loading) return (
         <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl gap-2">
@@ -557,7 +607,7 @@ export function ClassTask({ role = '', reloadKey }) {
                     {tasks.overdue?.map((task) => (
                         <tr key={task.id} className="hover:bg-zinc-50 transition">
                             <td className="px-4 py-3">
-                                <div className="h-10 w-2 bg-red-500 rounded"/>
+                                <div className="h-10 w-2 bg-red-500 rounded" />
                             </td>
 
                             <td className="px-4 py-3 text-gray-700 truncate">
@@ -578,7 +628,7 @@ export function ClassTask({ role = '', reloadKey }) {
                             {(role === 'Officer' || role === 'Student') && (
                                 <td className="px-4 py-3 text-center space-x-3">
                                     <button onClick={() => handleMarkFinish(task.id)}
-                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                        className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
                                     >
                                         Mark Finished
                                     </button>
@@ -589,7 +639,7 @@ export function ClassTask({ role = '', reloadKey }) {
                     {tasks.today?.map((task) => (
                         <tr key={task.id} className="hover:bg-zinc-50 transition">
                             <td className="px-4 py-3">
-                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-orange-400'}`}/>
+                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-orange-400'}`} />
                             </td>
 
                             <td className="px-4 py-3 text-gray-700 truncate">
@@ -610,7 +660,7 @@ export function ClassTask({ role = '', reloadKey }) {
                             {(role === 'Officer' || role === 'Student') && (
                                 <td className="px-4 py-3 text-center space-x-3">
                                     <button onClick={() => handleMarkFinish(task.id)}
-                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                        className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
                                     >
                                         Mark Finished
                                     </button>
@@ -619,13 +669,13 @@ export function ClassTask({ role = '', reloadKey }) {
 
                             {(role === 'Administrator' || role === 'Instructor') && (
                                 <td className="px-4 py-3 text-center space-x-3">
-                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
-                                        <EditRoundedIcon fontSize="small"/>
+                                    <button onClick={() => { setEditTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small" />
                                     </button>
-                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
-                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    <button onClick={() => { setDeleteTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small" />
                                     </button>
                                 </td>
                             )}
@@ -634,7 +684,7 @@ export function ClassTask({ role = '', reloadKey }) {
                     {tasks.upcoming?.map((task) => (
                         <tr key={task.id} className="hover:bg-zinc-50 transition">
                             <td className="px-4 py-3">
-                                <div className="h-10 w-2 bg-blue-500 rounded"/>
+                                <div className="h-10 w-2 bg-blue-500 rounded" />
                             </td>
 
                             <td className="px-4 py-3 text-gray-700 truncate">
@@ -656,7 +706,7 @@ export function ClassTask({ role = '', reloadKey }) {
                             {(role === 'Officer' || role === 'Student') && (
                                 <td className="px-4 py-3 text-center space-x-3">
                                     <button onClick={() => handleMarkFinish(task.id)}
-                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
+                                        className="inline-flex items-center justify-center rounded-md py-2 px-3 text-green-800 bg-green-100 hover:bg-green-200 transition"
                                     >
                                         Mark Finished
                                     </button>
@@ -665,13 +715,13 @@ export function ClassTask({ role = '', reloadKey }) {
 
                             {(role === 'Administrator' || role === 'Instructor') && (
                                 <td className="px-4 py-3 text-center space-x-3">
-                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
-                                        <EditRoundedIcon fontSize="small"/>
+                                    <button onClick={() => { setEditTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small" />
                                     </button>
-                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
-                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    <button onClick={() => { setDeleteTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small" />
                                     </button>
                                 </td>
                             )}
@@ -680,7 +730,7 @@ export function ClassTask({ role = '', reloadKey }) {
                     {tasks.finished?.map((task) => (
                         <tr key={task.id} className="hover:bg-zinc-50 transition">
                             <td className="px-4 py-3">
-                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-green-400'}`}/>
+                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-green-400'}`} />
                             </td>
 
                             <td className="px-4 py-3 text-gray-700 truncate">
@@ -701,7 +751,7 @@ export function ClassTask({ role = '', reloadKey }) {
                             {(role === 'Officer' || role === 'Student') && (
                                 <td className="px-4 py-3 text-center space-x-3">
                                     <button onClick={() => handleMarkUnfinish(task.id)}
-                                    className="inline-flex items-center justify-center rounded-md py-2 px-3 text-gray-600 bg-gray-100 hover:bg-gray-200 transition"
+                                        className="inline-flex items-center justify-center rounded-md py-2 px-3 text-gray-600 bg-gray-100 hover:bg-gray-200 transition"
                                     >
                                         Mark Unfinished
                                     </button>
@@ -709,22 +759,22 @@ export function ClassTask({ role = '', reloadKey }) {
                             )}
                             {(role === 'Administrator' || role === 'Instructor') && (
                                 <td className="px-4 py-3 text-center space-x-3">
-                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
-                                        <EditRoundedIcon fontSize="small"/>
+                                    <button onClick={() => { setEditTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small" />
                                     </button>
-                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
-                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    <button onClick={() => { setDeleteTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small" />
                                     </button>
                                 </td>
-                            )}                                                            
+                            )}
                         </tr>
                     ))}
                     {tasks.undated?.map((task) => (
                         <tr key={task.id} className="hover:bg-zinc-50 transition">
                             <td className="px-4 py-3">
-                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-green-400'}`}/>
+                                <div className={`h-10 w-2 rounded ${role === 'Administrator' || role === 'Instructor' ? 'bg-blue-500' : 'bg-green-400'}`} />
                             </td>
 
                             <td className="px-4 py-3 text-gray-700 truncate">
@@ -745,13 +795,13 @@ export function ClassTask({ role = '', reloadKey }) {
 
                             {(role === 'Administrator' || role === 'Instructor') && (
                                 <td className="px-4 py-3 text-center space-x-3">
-                                    <button onClick={() => {setEditTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
-                                        <EditRoundedIcon fontSize="small"/>
+                                    <button onClick={() => { setEditTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-200 transition">
+                                        <EditRoundedIcon fontSize="small" />
                                     </button>
-                                    <button onClick={() => {setDeleteTaskModalOpen(true); setSelectedTask(task)}}
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
-                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small"/>
+                                    <button onClick={() => { setDeleteTaskModalOpen(true); setSelectedTask(task) }}
+                                        className="inline-flex items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-100 transition">
+                                        <IndeterminateCheckBoxOutlinedIcon fontSize="small" />
                                     </button>
                                 </td>
                             )}
@@ -787,7 +837,7 @@ export function ClassAnnouncement({ role = '' }) {
     const fetchAnnouncements = async () => {
         try {
             const response = await api.get(`/class/${classCourseId}/announcements`);
-            if(response.data.success){
+            if (response.data.success) {
                 setAnnouncements(response.data.announcements);
             } else {
                 throw new Error("Failed to load announcements");
@@ -802,7 +852,7 @@ export function ClassAnnouncement({ role = '' }) {
 
     useEffect(() => {
         fetchAnnouncements();
-    },[classCourseId])
+    }, [classCourseId])
 
     if (loading) return (
         <div className="flex flex-col h-full overflow-y-auto bg-white w-full shadow-xs p-6 rounded-xl gap-2">
@@ -830,25 +880,25 @@ export function ClassAnnouncement({ role = '' }) {
 
                 <tbody className="divide-y divide-gray-100 bg-white">
                     {announcements.map((announcement) => (
-                    <tr key={announcement.id} className="hover:bg-zinc-50 transition">
-                        <td className="py-4 text-gray-900">
-                            <div className="h-10 w-2 bg-blue-500 rounded-full"/>
-                        </td>
-                        <td className="px-4 py-3 text-gray-700">{announcement.title}</td>
-                        <td className="px-4 py-3 text-gray-700">{announcement.description}</td>
-                        <td className="px-4 py-3 text-gray-700">{announcement.due_date? `${announcement.due_date} ${announcement.due_time? `| ${announcement.due_time}` : ''}` : '--'}</td>
-                        <td className="px-4 py-3 text-gray-700">{announcement.category}</td>
-                        {(role === 'Administrator' || role === 'Instructor') && (
-                            <td className="px-4 py-3 text-center space-x-3">
-                                <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-gray-800 hover:bg-gray-200 transition" onClick={() => console.log("Edit", enrollee.student.user.id)}>
-                                    Edit
-                                </button>
-                                <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-red-600 hover:bg-red-100 transition" onClick={() => console.log("Delete", enrollee.student.user.id)}>
-                                    Delete
-                                </button>
+                        <tr key={announcement.id} className="hover:bg-zinc-50 transition">
+                            <td className="py-4 text-gray-900">
+                                <div className="h-10 w-2 bg-blue-500 rounded-full" />
                             </td>
-                        )}
-                    </tr>
+                            <td className="px-4 py-3 text-gray-700">{announcement.title}</td>
+                            <td className="px-4 py-3 text-gray-700">{announcement.description}</td>
+                            <td className="px-4 py-3 text-gray-700">{announcement.due_date ? `${announcement.due_date} ${announcement.due_time ? `| ${announcement.due_time}` : ''}` : '--'}</td>
+                            <td className="px-4 py-3 text-gray-700">{announcement.category}</td>
+                            {(role === 'Administrator' || role === 'Instructor') && (
+                                <td className="px-4 py-3 text-center space-x-3">
+                                    <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-gray-800 hover:bg-gray-200 transition" onClick={() => console.log("Edit", enrollee.student.user.id)}>
+                                        Edit
+                                    </button>
+                                    <button className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 text-red-600 hover:bg-red-100 transition" onClick={() => console.log("Delete", enrollee.student.user.id)}>
+                                        Delete
+                                    </button>
+                                </td>
+                            )}
+                        </tr>
                     ))}
                 </tbody>
             </table>

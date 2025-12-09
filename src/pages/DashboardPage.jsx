@@ -355,7 +355,7 @@ export default function DashboardPage() {
               setActiveUsers(response.data.activeUsers)
               setInstructorCount(response.data.instructorCount)
               setStudentCount(response.data.studentCount)
-              setSchedule(response.data.schedule)
+              // setSchedule(response.data.schedule)
           } else {
               throw new Error("Failed to load dashboard data");
           }
@@ -443,7 +443,7 @@ export default function DashboardPage() {
                 </div>
             </div>
               <ScheduleTimeline scheduleData={schedule}/>
-    
+              {console.log(schedule)}
           </div>
         </div>
       </div>

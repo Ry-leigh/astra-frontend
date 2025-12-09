@@ -190,8 +190,8 @@ export default function CreateCalendarEventForm({ onSuccess, onClose }) {
                                 label="Start Date"
                                 value={startDate}
                                 onChange={(value) => { setStartDate(value); console.log(value) }}
-                                min="1950-01-01"
-                                max="2025-12-31"
+                                min="2000-01-01"
+                                max="2030-12-31"
                             />
                         </div>
                         {((endDate != startDate && endDate != null) || allDay) && (
@@ -203,8 +203,8 @@ export default function CreateCalendarEventForm({ onSuccess, onClose }) {
                                         label="End Date"
                                         value={endDate}
                                         onChange={(value) => { setEndDate(value); console.log(value) }}
-                                        min="1950-01-01"
-                                        max="2025-12-31"
+                                        min="2000-01-01"
+                                        max="2030-12-31"
                                     />
                                 </div>
                             </>
@@ -250,7 +250,7 @@ export default function CreateCalendarEventForm({ onSuccess, onClose }) {
                         name="category"
                         label="Category"
                         value={selectedCategory}
-                        onChange={(value) => { setSelectedCategory(value); if (value == "makeup_class") { setGlobal(false); setSelectedRoles([]); setSelectedPrograms([]); setSelectedClassrooms([]) } else {setGlobal(true)} }}
+                        onChange={(value) => { setSelectedCategory(value); if (value == "makeup_class") { setGlobal(false); setSelectedRoles([]); setSelectedPrograms([]); setSelectedClassrooms([]) } else { setGlobal(true) } }}
                         options={categoryOptions}
                     />
                 </div>

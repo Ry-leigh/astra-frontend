@@ -104,7 +104,7 @@ export default function CalendarPage() {
                 </button>
               )}
             </Navigation>
-            {activeTab === "events" ? <Calendar events={events} loading={loading} /> : <Scheduler />}
+            {activeTab === "events" ? <Calendar fetchEvents={fetchEvents} events={events} loading={loading} /> : <Scheduler />}
           </div>
         </div>
       </div>

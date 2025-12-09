@@ -20,6 +20,7 @@ import CoursePage from "@/pages/CoursePage";
 import ClassPage from "@/pages/ClassPage";
 import ClassesPage from "@/pages/ClassesPage";
 import Layout from "@/components/layout/Layout";
+import CoursesPage from "@/pages/CoursesPage";
 
 export default function AppRouter() {
   return (
@@ -37,6 +38,7 @@ export default function AppRouter() {
         <Route path="/programs" element={<ProgramsPage />} />
         <Route path="/classrooms/:id" element={<ClassroomPage />} />
         <Route path="/courses/:id" element={<CoursePage />} />
+        <Route path="/course" element={<CoursesPage />} />
 
         <Route path="/classes" element={<ClassesPage />} />
         <Route path="/class/:classCourseId/:date?" element={<ClassPage />} />

@@ -100,7 +100,9 @@ export default function AddCourseForm({ classroomId, academicYearId, semesterId,
                     value={instructorId}
                     onChange={setInstructorId}
                     options={instructorOptions}
+                    
                 />
+                {console.log(instructorOptions)}
             </div>
             <div className="flex flex-col h-14 gap-2">
                 <FloatingLabelDropdown

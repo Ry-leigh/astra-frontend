@@ -14,6 +14,8 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import timeConverter from './timeConverter';
+import Modal from './Modal';
+import ViewEventModal from '../modals/ViewEventModal';
 
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
@@ -42,7 +44,7 @@ export function CalendarRadio({ activeTab = "month", handleTabChange = () => {} 
     )
 }
 
-export default function Calendar({ events, loading }) {
+export default function Calendar({ fetchEvents, events, loading }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [activeTab, setActiveTab] = useState('month');
 
@@ -85,7 +87,7 @@ export default function Calendar({ events, loading }) {
         <div className="h-full">Loading events...</div>
       ) : (
         <>
-          {activeTab === "month" && <MonthView weeks={weeks} events={events} currentMonth={currentMonth} />}
+          {activeTab === "month" && <MonthView fetchEvents={fetchEvents} weeks={weeks} events={events} currentMonth={currentMonth} />}
           {activeTab === "week" && <WeekView events={events} currentDay={currentMonth} />}
           {activeTab === "day" && <DayView events={events} currentDay={currentMonth} />}
           {activeTab === "list" && <ListView weeks={weeks} events={events} currentMonth={currentMonth} />}
@@ -95,7 +97,7 @@ export default function Calendar({ events, loading }) {
   );
 }
 
-function MonthView({ weeks, events, currentMonth }) {
+function MonthView({ fetchEvents, weeks, events, currentMonth }) {
     return (
         <div className='border rounded-md p-4 border-gray-200'>
             <div className='bg-slate-100 grid grid-cols-7 border border-gray-200 divide-x divide-gray-200 text-sm font-semibold'>
@@ -104,7 +106,7 @@ function MonthView({ weeks, events, currentMonth }) {
                 ))}
             </div>
             <div className="">
-                {weeks.map((week, i) => (<WeekRow key={i} week={week} events={events} month={currentMonth} />))}
+                {weeks.map((week, i) => (<WeekRow fetchEvents={fetchEvents} key={i} week={week} events={events} month={currentMonth} />))}
             </div>
         </div>
     )
@@ -300,9 +302,11 @@ function ListView({ weeks, events, currentMonth }) {
     )
 }
 
-function WeekRow({ week, events, month }) {
+function WeekRow({ fetchEvents, week, events, month }) {
     const weekStart = week[0];
     const weekEnd = week[6];
+    const [openEventModal, setOpenEventModal] = useState(false)
+    const [selectedEvent, setSelectedEvent] = useState()
 
     // Track rows (slots)
     const occupied = Array(7).fill(0);
@@ -350,7 +354,7 @@ function WeekRow({ week, events, month }) {
 
             {week.map(d => (
                 <div key={d.format("YYYY-MM-DD")} className={`border-r border-gray-200 ${d.month() != month.month()? 'text-gray-300' : 'text-black'}`}>
-                    <div className={`h-1/4 m-1 rounded-sm p-1 text-right text-sm ${d.isSame(dayjs(), "day") ? "bg-violet-100 font-medium " : ""}`}>
+                    <div className={`h-fit m-1 rounded-sm p-1 text-right text-sm ${d.isSame(dayjs(), "day") ? "bg-violet-100 font-medium " : ""}`}>
                         {d.date()}
                     </div>
                     <div style={{ height: `${maxSlot * rowHeight}rem` }} />
@@ -358,9 +362,10 @@ function WeekRow({ week, events, month }) {
             ))}
 
             <div className="absolute inset-0 grid grid-cols-7 auto-rows-min gap-y-1 pointer-events-none">
-                <div className="h-5 m-1 rounded-sm p-1 text-right text-sm "/>
+                <div className="h-6 m-1 rounded-sm p-1 text-right text-sm "/>
                 {weekEvents.map(event => (
                     <div
+                        onClick={() => {setOpenEventModal(true); setSelectedEvent(event)}}
                         key={event.id}
                         className="flex bg-blue-100 h-5 mx-1 border-l-4 border-blue-500 rounded-sm px-1 text-xs items-center pointer-events-auto cursor-pointer"
                         style={{
@@ -374,7 +379,9 @@ function WeekRow({ week, events, month }) {
                     </div>
                 ))}
             </div>
-
+            <Modal open={openEventModal} onClose={() => setOpenEventModal(false)} title={selectedEvent?.title}>
+                <ViewEventModal onSuccess={fetchEvents} onClose={() => setOpenEventModal(false)} event={selectedEvent}/>
+            </Modal>
         </div>
     );
 }

@@ -23,8 +23,9 @@ export default function Sidebar({ collapsed=false }) {
         { name: "Announcements", path: "/announcements", icon: <CampaignOutlinedIcon fontSize="small" /> },
         { name: "Calendar", path: "/calendar", icon: <CalendarTodayOutlinedIcon fontSize="small" /> },
         { name: "Programs", path: "/programs", icon: <BusinessOutlinedIcon fontSize="small" /> },
-        { name: "Classes", path: "/class/6", icon: <LibraryBooksOutlinedIcon fontSize="small" /> },
-        { name: "Users", path: "/users", icon: <GroupsOutlinedIcon fontSize="small" /> }],
+        { name: "Classes", path: "/classes", icon: <LibraryBooksOutlinedIcon fontSize="small" /> },
+        { name: "Users", path: "/users", icon: <GroupsOutlinedIcon fontSize="small" /> },
+        { name: "Courses", path: "/course", icon: <SchoolOutlinedIcon fontSize="small" /> }],
       bottom: [
         { name: "Help", path: "/help", icon: <InfoOutlinedIcon fontSize="small" /> },
         { name: "Settings", path: "/settings", icon: <SettingsOutlinedIcon fontSize="small" /> }
@@ -78,7 +79,7 @@ export default function Sidebar({ collapsed=false }) {
   return (
     <aside className={`bg-white h-screen ${collapsed ? 'w-21.5' : 'w-3xs'} transition-all duration-300 flex flex-col px-4 pb-8`}>
       <div className="flex items-center px-2 py-5">
-        <Link className="flex items-center w-fit h-10 gap-4" to={"/"}>
+        <Link className="flex items-center w-fit h-8 gap-4" to={"/"}>
           <img src={logo} alt="A" className="w-9"/>
           {!collapsed && <div className="font-bold text-xl">ASTRA</div>}
         </Link>

@@ -30,7 +30,7 @@ function Navigation({ activeTab, handleTabChange, role, children }) {
                 <h2>All</h2>
             </NavLink>
 
-            <NavLink to="#" end className={`${neutral} ${activeTab === "general" ? active : inactive}`} onClick={() => handleTabChange("general")}>
+            {/* <NavLink to="#" end className={`${neutral} ${activeTab === "general" ? active : inactive}`} onClick={() => handleTabChange("general")}>
                 <h2>General</h2>
             </NavLink>
             {(role === 'Administrator') && (
@@ -44,7 +44,7 @@ function Navigation({ activeTab, handleTabChange, role, children }) {
             </NavLink>
             <NavLink to="#" end className={`${neutral} ${activeTab === "past" ? active : inactive}`} onClick={() => handleTabChange("past")}>
                 <h2>Past</h2>
-            </NavLink>
+            </NavLink> */}
         </div>
         {children}
     </div>
