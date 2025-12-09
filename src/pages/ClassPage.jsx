@@ -6,8 +6,6 @@ import { useAuth } from "@/context/AuthContext";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 import ErrorRoute from "@/router/ErrorRoute";
-import ClassPreloader from "@/components/preloaders/ClassPreloader";
-import { PrimaryButton, EditButton } from "@/components/elements/Buttons";
 import { ClassIndex, ClassAttendance, ClassTask, ClassAnnouncement } from "@/components/elements/ClassContents";
 import Modal from "@/components/elements/Modal";
 import EnrollStudentForm from "@/components/forms/EnrollStudentForm";
