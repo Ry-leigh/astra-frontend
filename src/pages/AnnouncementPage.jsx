@@ -121,18 +121,10 @@ function AllAnnouncements({ loading, error, role, announcements, targetCatalog, 
     if (loading) return <Preloader text="Loading announcements"/>;
     if (error) return <ErrorRoute code={error} />;
 
-    const today = new Date();
-
-    // ALL = everything except past
-    const filtered = announcements.filter(a => {
-        if (!a.event_date) return true;
-        return new Date(a.event_date) >= today;
-    });
-
     return (
         <FilteredAnnouncementList
             role={role}
-            announcements={filtered}
+            announcements={announcements}
             fetchAnnouncements={fetchAnnouncements}
             targetCatalog={targetCatalog}
             emptyText="No announcements available."

@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Preloader from "@/components/preloaders/Preloader";
 
 export default function PrivateRoute({ children }) {
   const { user, loading, isLoggingOutRef } = useAuth();
@@ -21,7 +22,9 @@ export default function PrivateRoute({ children }) {
   }, [loading, token, isLoggingOutRef, location.pathname, navigate]);
 
   // while loading show loader
-  if (loading) return <div className="text-center mt-20 text-3xl">Loading...</div>;
+  if (loading) return <div className="flex justify-center w-screen h-screen items-center">
+    <Preloader/>
+    </div>;
   // if token present (fast check) render children; otherwise render nothing
   return token ? children : null;
 }

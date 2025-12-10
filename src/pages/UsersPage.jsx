@@ -11,12 +11,16 @@ import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import PageHeader from "@/components/elements/PageHeader";
 import ErrorRoute from "@/router/ErrorRoute";
 import Preloader from "@/components/preloaders/Preloader";
+import DeleteUserModal from "@/components/modals/DeleteUserModal";
 
 export default function UsersPage() {
     const [users, setUsers] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [search, setSearch] = useState("");
+    const [openDeleteModal, setOpenDeleteModal] = useState(false)
+    const [userId, setUserId] = useState()
+    const [userName, setUserName] = useState()
 
     const fetchUsers = async () => {
         try {
@@ -102,7 +106,7 @@ export default function UsersPage() {
                                                     <Link to={`/users/${user.id}`} className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 text-xl hover:bg-gray-200 transition">
                                                         <EditRoundedIcon fontSize="inherit" />
                                                     </Link>
-                                                    <button className="inline-flex items-center justify-center rounded-md p-2 text-red-600 text-xl hover:bg-red-100 transition">
+                                                    <button onClick={() => {setUserId(user.id); setUserName(`${user.first_name} ${user.first_name}`)}} className="inline-flex items-center justify-center rounded-md p-2 text-red-600 text-xl hover:bg-red-100 transition">
                                                         <IndeterminateCheckBoxOutlinedIcon fontSize="inherit" />
                                                     </button>
                                                 </td>
@@ -120,6 +124,13 @@ export default function UsersPage() {
                     </div>
                 </div>
             </div>
+            <DeleteUserModal
+                open={openDeleteModal}
+                onClose={() => setOpenDeleteModal(false)}
+                userId={userId}
+                userName={userName}
+                onDeleted={fetchUsers}
+            />
         </>
     );
 }
